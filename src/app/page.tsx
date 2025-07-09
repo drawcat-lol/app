@@ -17,8 +17,8 @@ export default function Home() {
             <Navbar />
         </div>
         // <div className="flex flex-col">
-        //     <Link href={"/auth/provider/discord"}>sign in with discord</Link>
-        //     <Link href={"/auth/provider/github"}>sign in with github</Link>
+        //     <Link href={"/auth/login/discord"}>sign in with discord</Link>
+        //     <Link href={"/auth/login/github"}>sign in with github</Link>
         // </div>
     );
 }
