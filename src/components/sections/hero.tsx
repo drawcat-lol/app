@@ -1,12 +1,10 @@
-import { Download, Eraser, Pen, Upload } from "lucide-react";
-import { ReactSketchCanvas } from "react-sketch-canvas";
-import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
+import { Download, Upload } from "lucide-react";
 import { Button } from "../ui/button";
 import Canvas from "../canvas";
 
 export default function Hero() {
     return (
-        <div className="max-w-2xl mx-auto px-4 py-24 text-center">
+        <div className="max-w-2xl mx-auto px-4 py-28 text-center">
             <div className="flex flex-col">
                 <span className="text-6xl font-display font-bold">
                     just draw
