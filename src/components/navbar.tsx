@@ -1,4 +1,5 @@
 import { Cat } from "lucide-react";
+import Link from "next/link";
 
 export default function Navbar() {
     return (
@@ -10,9 +11,9 @@ export default function Navbar() {
 
             <div className="hidden md:block">
                 <div className="flex gap-8">
-                    <span className="font-semibold">home</span>
-                    <span className="font-semibold">explore</span>
-                    <span className="font-semibold">account</span>
+                    <Link href={"/canvas"} className="font-semibold">canvas</Link>
+                    <Link href={"/explore"} className="font-semibold">explore</Link>
+                    <Link href={"/account"} className="font-semibold">account</Link>
                 </div>
             </div>
         </div>
