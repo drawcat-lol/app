@@ -4,10 +4,10 @@ import suapbase from "@/utils/supabase";
 import { useEffect } from "react";
 
 export default function Page() {
-    const redirectTo = `${window.location.origin}/auth/callback/discord`;
-
     useEffect(() => {
         async function redirect() {
+            const redirectTo = `${window.location.origin}/auth/callback/discord`;
+
             await suapbase.auth.signInWithOAuth({
                 provider: "discord",
                 options: { redirectTo },
