@@ -1,8 +1,8 @@
 "use client";
 
 import Navbar from "@/components/navbar";
+import Hero from "@/components/sections/hero";
 import useUserStore from "@/stores/user";
-import Link from "next/link";
 import { useEffect } from "react";
 
 export default function Home() {
@@ -13,12 +13,9 @@ export default function Home() {
     }, [user]);
 
     return (
-        <div className="">
-            <Navbar />
+        <div>
+            <div className="absolute inset-0 -z-10 h-full w-full bg-white [background:radial-gradient(125%_125%_at_50%_10%,#fff_40%,rgb(255,140,55,0.5)_100%)]"></div>
+            <Hero />
         </div>
-        // <div className="flex flex-col">
-        //     <Link href={"/auth/login/discord"}>sign in with discord</Link>
-        //     <Link href={"/auth/login/github"}>sign in with github</Link>
-        // </div>
     );
 }

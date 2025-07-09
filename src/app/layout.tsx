@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Inter_Tight } from "next/font/google";
 import "./globals.css";
 import UserProvider from "@/components/user-provider";
+import Navbar from "@/components/navbar";
 
 const inter = Inter({
     variable: "--font-inter",
@@ -28,7 +29,10 @@ export default function RootLayout({
             <body
                 className={`${inter.className} ${geistMono.variable} antialiased`}
             >
-                <UserProvider>{children}</UserProvider>
+                <UserProvider>
+                    {/* <Navbar /> */}
+                    {children}
+                </UserProvider>
             </body>
         </html>
     );
