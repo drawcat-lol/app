@@ -30,7 +30,7 @@ export default function RootLayout({
                 className={`${inter.className} ${geistMono.variable} antialiased`}
             >
                 <UserProvider>
-                    {/* <Navbar /> */}
+                    <div className="absolute inset-0 -z-10 h-full w-full bg-white [background:radial-gradient(125%_125%_at_50%_10%,#fff_40%,rgb(255,140,55,0.5)_100%)]"></div>
                     {children}
                 </UserProvider>
             </body>
