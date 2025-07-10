@@ -30,7 +30,7 @@ export default function RootLayout({
                 className={`${inter.className} ${geistMono.variable} antialiased`}
             >
                 <UserProvider>
-                    <Navbar />
+                    {/* <Navbar /> */}
                     {children}
                 </UserProvider>
             </body>

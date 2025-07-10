@@ -1,4 +1,4 @@
-import { Download, Upload } from "lucide-react";
+import { Check, Download, Upload } from "lucide-react";
 import { Button } from "../ui/button";
 import Canvas from "../canvas";
 
@@ -17,12 +17,14 @@ export default function Hero() {
                     we love poorly drawn cats.
                 </span>
 
-                <Canvas />
+                <div className="w-fit mx-auto">
+                    <Canvas />
+                </div>
 
                 <div className="mt-10 flex gap-2 justify-center">
                     <Button size={"lg"}>
-                        <Upload />
-                        upload cat
+                        <Check />
+                        submit
                     </Button>
                     <Button variant={"ghost"} size={"lg"}>
                         <Download />
