@@ -1,5 +1,7 @@
 "use client";
 
+import useBlobStore from "@/stores/blob";
+import useShouldSubmitStore from "@/stores/should-submit";
 import React, {
     forwardRef,
     useEffect,
@@ -23,6 +25,9 @@ type Props = {
 
 const Canvas = forwardRef<CanvasHandle, Props>(
     ({ strokeWidth, strokeColor, eraseMode, eraserSize }, ref) => {
+        const { shouldSubmit } = useShouldSubmitStore();
+        const { setBlob } = useBlobStore();
+
         const canvasRef = useRef<HTMLCanvasElement>(null);
         const [drawing, setDrawing] = useState(false);
         const undoStack = useRef<ImageData[]>([]);
@@ -101,11 +106,12 @@ const Canvas = forwardRef<CanvasHandle, Props>(
             }
 
             function handleDown(e: MouseEvent) {
-                // save for undo
+                // snapshot before stroke
                 undoStack.current.push(
                     ctx.getImageData(0, 0, canvas.width, canvas.height)
                 );
                 redoStack.current = [];
+
                 const pos = getPos(e);
                 ctx.beginPath();
                 ctx.moveTo(pos.x, pos.y);
@@ -120,6 +126,7 @@ const Canvas = forwardRef<CanvasHandle, Props>(
             }
 
             function handleUp() {
+                if (!drawing) return;
                 setDrawing(false);
             }
 
@@ -133,6 +140,14 @@ const Canvas = forwardRef<CanvasHandle, Props>(
                 window.removeEventListener("mouseup", handleUp);
             };
         }, [drawing]);
+
+        // submit canvas blob
+        useEffect(() => {
+            if (shouldSubmit) {
+                const canvas = canvasRef.current!;
+                canvas.toBlob((blob) => setBlob(blob));
+            }
+        }, [shouldSubmit]);
 
         return (
             <canvas
