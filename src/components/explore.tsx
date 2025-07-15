@@ -16,13 +16,13 @@ export default function Explore() {
                 </span>
             </div>
 
-            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
-                {[1, 1, 1, 1, 1, 1].map((item, index) => (
+            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 overflow-hidden rounded-2xl gap-[1px] border bg-border shadow-2xl">
+                {[...Array(8)].map((item, index) => (
                     <div
-                        className="rounded-2xl shadow-2xl border w-full flex flex-col text-start overflow-hidden group"
+                        className="w-full flex flex-col text-start overflow-hidden group bg-white relative"
                         key={index}
                     >
-                        <div className="overflow-hidden border-b">
+                        <div className="overflow-hidden">
                             <Image
                                 className="w-full aspect-square group-hover:scale-105 duration-175"
                                 src={"/cat_drawing.png"}
@@ -31,7 +31,7 @@ export default function Explore() {
                                 alt="cat drawing"
                             />
                         </div>
-                        <div className="p-4 flex flex-col gap-2">
+                        <div className="p-4 flex flex-col gap-2 absolute bg-white bottom-0 translate-y-full group-hover:translate-y-0 duration-175 w-full border-t">
                             <span className="font-bold font-display text-2xl">
                                 some cat
                             </span>
