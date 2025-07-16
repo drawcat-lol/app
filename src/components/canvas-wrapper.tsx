@@ -9,7 +9,7 @@ import Canvas, { CanvasHandle } from "./canvas";
 
 export default function CanvasWrapper() {
     const [eraseMode, setEraseMode] = useState(false);
-    const [strokeWidth, setStrokeWidth] = useState(8);
+    const [strokeWidth, setStrokeWidth] = useState(4);
     const [eraserSize, setEraserSize] = useState(12);
     const [strokeColor, setStrokeColor] = useState("#000000");
 

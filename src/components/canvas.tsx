@@ -1,6 +1,7 @@
 "use client";
 
 import useBlobStore from "@/stores/blob";
+import useShouldDownloadStore from "@/stores/should-download";
 import useShouldSubmitStore from "@/stores/should-submit";
 import React, {
     forwardRef,
@@ -26,6 +27,7 @@ type Props = {
 const Canvas = forwardRef<CanvasHandle, Props>(
     ({ strokeWidth, strokeColor, eraseMode, eraserSize }, ref) => {
         const { shouldSubmit } = useShouldSubmitStore();
+        const { shouldDownload } = useShouldDownloadStore();
         const { setBlob } = useBlobStore();
 
         const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -148,6 +150,13 @@ const Canvas = forwardRef<CanvasHandle, Props>(
                 canvas.toBlob((blob) => setBlob(blob));
             }
         }, [shouldSubmit]);
+
+        useEffect(() => {
+            if (shouldDownload) {
+                const canvas = canvasRef.current!;
+                canvas.toBlob((blob) => setBlob(blob));
+            }
+        }, [shouldDownload]);
 
         return (
             <canvas
