@@ -46,7 +46,7 @@ export default function Explore() {
                 <span className="mt-8 text-lg text-balance opacity-75">
                     see what others have drawn!
                     <br />
-                    you can also like and comment.
+                    hover over any drawing to view more info.
                 </span>
             </div>
 
