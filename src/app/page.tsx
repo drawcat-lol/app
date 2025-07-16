@@ -7,7 +7,7 @@ import useBlobStore from "@/stores/blob";
 import useShouldSubmitStore from "@/stores/should-submit";
 import useUserStore from "@/stores/user";
 import suapbase from "@/utils/supabase";
-import { Check, Cross, Download, X } from "lucide-react";
+import { Check, Download } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -33,7 +33,7 @@ export default function Hero() {
     const { shouldDownload, setShouldDownload } = useShouldDownloadStore();
     const { blob } = useBlobStore();
 
-    const [submitForm, setSubmitForm] = useState({ name: "", description: "" });
+    const [submitForm, setSubmitForm] = useState({ name: "" });
 
     function handleSubmit() {
         setShouldSubmit(true);
@@ -59,7 +59,6 @@ export default function Hero() {
                     {
                         uid: user.id,
                         name: submitForm.name,
-                        description: submitForm.description,
                     },
                     { onConflict: "uid" }
                 );
@@ -93,7 +92,7 @@ export default function Hero() {
     return (
         <>
             <div className="bg-white [background:radial-gradient(125%_125%_at_50%_10%,#fff_40%,rgb(255,140,55,0.5)_100%)]">
-                <div className="max-w-2xl mx-auto px-4 py-28 text-center">
+                <div className="max-w-2xl mx-auto px-4 py-20 text-center">
                     <div className="flex flex-col">
                         <span className="text-6xl font-display font-bold">
                             just draw
@@ -152,42 +151,22 @@ export default function Hero() {
                                 <DialogContent>
                                     <DialogHeader>
                                         <DialogTitle>
-                                            describe your masterpiece
+                                            name your masterpiece
                                         </DialogTitle>
+                                        <DialogDescription>
+                                            give your drwaing a name so it can
+                                            be easily searched up!
+                                        </DialogDescription>
                                     </DialogHeader>
-                                    <div className="flex flex-col gap-4">
-                                        <div className="flex items-center gap-2">
-                                            <div className="grid flex-1 gap-2">
-                                                <Label>name</Label>
-                                                <Input
-                                                    placeholder="black cat"
-                                                    onChange={(e) =>
-                                                        setSubmitForm({
-                                                            name: e.target
-                                                                .value,
-                                                            description:
-                                                                submitForm.description,
-                                                        })
-                                                    }
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <div className="grid flex-1 gap-2">
-                                                <Label>description</Label>
-                                                <Textarea
-                                                    placeholder="this is a cat from africa"
-                                                    onChange={(e) =>
-                                                        setSubmitForm({
-                                                            name: submitForm.name,
-                                                            description:
-                                                                e.target.value,
-                                                        })
-                                                    }
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <Input
+                                        placeholder="black cat"
+                                        onChange={(e) =>
+                                            setSubmitForm({
+                                                name: e.target.value,
+                                            })
+                                        }
+                                        autoFocus
+                                    />
                                     <DialogFooter>
                                         <DialogClose asChild>
                                             <Button
