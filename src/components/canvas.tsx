@@ -99,30 +99,41 @@ const Canvas = forwardRef<CanvasHandle, Props>(
             const scaleX = canvas.width / canvas.offsetWidth;
             const scaleY = canvas.height / canvas.offsetHeight;
 
-            function getPos(e: MouseEvent) {
+            function getMousePos(e: MouseEvent | TouchEvent) {
                 const rect = canvas.getBoundingClientRect();
+                let clientX, clientY;
+
+                if (e instanceof MouseEvent) {
+                    clientX = e.clientX;
+                    clientY = e.clientY;
+                } else {
+                    clientX = e.touches[0].clientX;
+                    clientY = e.touches[0].clientY;
+                }
+
                 return {
-                    x: (e.clientX - rect.left) * scaleX,
-                    y: (e.clientY - rect.top) * scaleY,
+                    x: (clientX - rect.left) * scaleX,
+                    y: (clientY - rect.top) * scaleY,
                 };
             }
 
-            function handleDown(e: MouseEvent) {
-                // snapshot before stroke
+            function handleDown(e: MouseEvent | TouchEvent) {
+                e.preventDefault();
                 undoStack.current.push(
                     ctx.getImageData(0, 0, canvas.width, canvas.height)
                 );
                 redoStack.current = [];
 
-                const pos = getPos(e);
+                const pos = getMousePos(e);
                 ctx.beginPath();
                 ctx.moveTo(pos.x, pos.y);
                 setDrawing(true);
             }
 
-            function handleMove(e: MouseEvent) {
+            function handleMove(e: MouseEvent | TouchEvent) {
                 if (!drawing) return;
-                const pos = getPos(e);
+                e.preventDefault();
+                const pos = getMousePos(e);
                 ctx.lineTo(pos.x, pos.y);
                 ctx.stroke();
             }
@@ -136,10 +147,22 @@ const Canvas = forwardRef<CanvasHandle, Props>(
             canvas.addEventListener("mousemove", handleMove);
             window.addEventListener("mouseup", handleUp);
 
+            canvas.addEventListener("touchstart", handleDown, {
+                passive: false,
+            });
+            canvas.addEventListener("touchmove", handleMove, {
+                passive: false,
+            });
+            window.addEventListener("touchend", handleUp);
+
             return () => {
                 canvas.removeEventListener("mousedown", handleDown);
                 canvas.removeEventListener("mousemove", handleMove);
                 window.removeEventListener("mouseup", handleUp);
+
+                canvas.removeEventListener("touchstart", handleDown);
+                canvas.removeEventListener("touchmove", handleMove);
+                window.removeEventListener("touchend", handleUp);
             };
         }, [drawing]);
 
