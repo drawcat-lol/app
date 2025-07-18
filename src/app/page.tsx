@@ -65,7 +65,6 @@ export default function Hero() {
             if (storageUploadError || dataUploadError) {
                 toast.error("something went wrong!", {
                     richColors: true,
-                    className: "",
                 });
                 console.log("error upserting: ", dataUploadError);
             } else {

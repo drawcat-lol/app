@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Button } from "./ui/button";
-import { Heart, Search, Share2 } from "lucide-react";
+import { Check, Flag, Heart, Search, Share2 } from "lucide-react";
 import {
     Pagination,
     PaginationContent,
@@ -15,12 +15,26 @@ import suapbase from "@/utils/supabase";
 import { toast } from "sonner";
 import { formatDate } from "@/utils/formatDate";
 import { Input } from "./ui/input";
+import {
+    Dialog,
+    DialogContent,
+    DialogTitle,
+    DialogDescription,
+    DialogTrigger,
+    DialogFooter,
+} from "./ui/dialog";
+import { Textarea } from "./ui/textarea";
+import useUserStore from "@/stores/user";
 
 export default function Explore() {
+    const { user } = useUserStore();
     const [pics, setPics] = useState<any[]>([]);
 
     const [searchTerm, setSearchTerm] = useState("");
     const [finalSearchTerm, setFinalSearchTerm] = useState("");
+
+    const [reportDialogOpen, setReportDialogOpen] = useState(false);
+    const [reportDescription, setReportDescription] = useState("");
 
     useEffect(() => {
         const yes = async () => {
@@ -49,6 +63,30 @@ export default function Explore() {
             top: document.body.scrollHeight,
             behavior: "smooth",
         });
+    }
+
+    async function handleReport(reporting: string) {
+        if (user) {
+            const { error } = await suapbase.from("reports").insert({
+                description: reportDescription,
+                from: user.id,
+                reporting,
+            });
+
+            if (error) {
+                toast.error("something went wrong! try again later.", {
+                    richColors: true,
+                });
+            } else {
+                toast.success("we've recieved your report!", {
+                    richColors: true,
+                });
+
+                setReportDescription("");
+            }
+        } else {
+            toast.warning("please log in first!", { richColors: true });
+        }
     }
 
     return (
@@ -134,12 +172,76 @@ export default function Explore() {
                                         </span>
                                         <div className="flex justify-between items-end">
                                             <div className="flex gap-2">
-                                                <Button
-                                                    variant={"outline"}
-                                                    size={"icon"}
-                                                >
-                                                    <Heart />
-                                                </Button>
+                                                <Dialog>
+                                                    <DialogTrigger asChild>
+                                                        <Button
+                                                            variant={"outline"}
+                                                            size={"icon"}
+                                                        >
+                                                            <Flag />
+                                                        </Button>
+                                                    </DialogTrigger>
+                                                    <DialogContent>
+                                                        <DialogTitle>
+                                                            report drawing
+                                                        </DialogTitle>
+                                                        <DialogDescription>
+                                                            you're about to
+                                                            report this user for
+                                                            submitting a drawing
+                                                            that breaks the
+                                                            rules.
+                                                            <br />
+                                                            <br />
+                                                            drawings usually get
+                                                            reported for reasons
+                                                            like:
+                                                            <br />
+                                                            <br />
+                                                            <ul className="list-disc list-inside">
+                                                                <li>
+                                                                    it's NSFW
+                                                                </li>
+                                                                <li>
+                                                                    it's not a
+                                                                    cat
+                                                                </li>
+                                                                <li>
+                                                                    it's a dog
+                                                                </li>
+                                                                <li>
+                                                                    it contains
+                                                                    gore
+                                                                </li>
+                                                            </ul>
+                                                        </DialogDescription>
+                                                        <Textarea
+                                                            placeholder="describe what's wrong with this drawing"
+                                                            value={
+                                                                reportDescription
+                                                            }
+                                                            onChange={(e) =>
+                                                                setReportDescription(
+                                                                    e.target
+                                                                        .value
+                                                                )
+                                                            }
+                                                        />
+                                                        <DialogFooter>
+                                                            <Button
+                                                                size={"lg"}
+                                                                onClick={() =>
+                                                                    handleReport(
+                                                                        item.uid
+                                                                    )
+                                                                }
+                                                            >
+                                                                <Check />
+                                                                submit
+                                                            </Button>
+                                                        </DialogFooter>
+                                                    </DialogContent>
+                                                </Dialog>
                                                 <Button
                                                     variant={"outline"}
                                                     size={"icon"}
