@@ -39,12 +39,20 @@ export default function CanvasWrapper() {
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, []);
 
-    function handleUndoRedo(value: string) {
-        if (value === "undo") {
-            canvasRef.current?.undo();
-        } else {
-            canvasRef.current?.redo();
-        }
+    // function handleUndoRedo(value: string) {
+    //     if (value === "undo") {
+    //         canvasRef.current?.undo();
+    //     } else {
+    //         canvasRef.current?.redo();
+    //     }
+    // }
+
+    function handleUndo() {
+        canvasRef.current?.undo();
+    }
+
+    function handleRedo() {
+        canvasRef.current?.redo();
     }
 
     function handleUpload(e: ChangeEvent<HTMLInputElement>) {
@@ -60,16 +68,19 @@ export default function CanvasWrapper() {
                     <ToggleGroup
                         variant="outline"
                         type="single"
-                        defaultValue="pen"
                         size="default"
-                        onValueChange={(value) =>
-                            setEraseMode(value === "eraser")
-                        }
+                        value={eraseMode ? "eraser" : "pen"}
                     >
-                        <ToggleGroupItem value="pen">
+                        <ToggleGroupItem
+                            value="pen"
+                            onClick={() => setEraseMode(false)}
+                        >
                             <Pen />
                         </ToggleGroupItem>
-                        <ToggleGroupItem value="eraser">
+                        <ToggleGroupItem
+                            value="eraser"
+                            onClick={() => setEraseMode(true)}
+                        >
                             <Eraser />
                         </ToggleGroupItem>
                     </ToggleGroup>
@@ -77,12 +88,12 @@ export default function CanvasWrapper() {
                         variant="outline"
                         type="single"
                         size="default"
-                        onValueChange={handleUndoRedo}
+                        value="none"
                     >
-                        <ToggleGroupItem value="undo">
+                        <ToggleGroupItem value="undo" onClick={handleUndo}>
                             <Undo />
                         </ToggleGroupItem>
-                        <ToggleGroupItem value="redo">
+                        <ToggleGroupItem value="redo" onClick={handleRedo}>
                             <Redo />
                         </ToggleGroupItem>
                     </ToggleGroup>

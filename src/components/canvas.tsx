@@ -39,7 +39,9 @@ const Canvas = forwardRef<CanvasHandle, Props>(
             undo() {
                 const canvas = canvasRef.current;
                 if (!canvas || undoStack.current.length === 0) return;
-                const ctx = canvas.getContext("2d")!;
+                const ctx = canvas.getContext("2d", {
+                    willReadFrequently: true,
+                })!;
                 const last = undoStack.current.pop()!;
                 redoStack.current.push(
                     ctx.getImageData(0, 0, canvas.width, canvas.height)
@@ -49,7 +51,9 @@ const Canvas = forwardRef<CanvasHandle, Props>(
             redo() {
                 const canvas = canvasRef.current;
                 if (!canvas || redoStack.current.length === 0) return;
-                const ctx = canvas.getContext("2d")!;
+                const ctx = canvas.getContext("2d", {
+                    willReadFrequently: true,
+                })!;
                 const next = redoStack.current.pop()!;
                 undoStack.current.push(
                     ctx.getImageData(0, 0, canvas.width, canvas.height)
@@ -59,7 +63,9 @@ const Canvas = forwardRef<CanvasHandle, Props>(
             loadImage(file: File) {
                 const canvas = canvasRef.current;
                 if (!canvas) return;
-                const ctx = canvas.getContext("2d")!;
+                const ctx = canvas.getContext("2d", {
+                    willReadFrequently: true,
+                })!;
                 const img = new Image();
                 const reader = new FileReader();
                 reader.onload = () => {
@@ -82,7 +88,7 @@ const Canvas = forwardRef<CanvasHandle, Props>(
         useEffect(() => {
             const canvas = canvasRef.current;
             if (!canvas) return;
-            const ctx = canvas.getContext("2d")!;
+            const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
             ctx.lineWidth = eraseMode ? eraserSize : strokeWidth;
             ctx.strokeStyle = strokeColor;
             ctx.lineCap = "round";
@@ -95,7 +101,7 @@ const Canvas = forwardRef<CanvasHandle, Props>(
         // drawing handlers
         useEffect(() => {
             const canvas = canvasRef.current!;
-            const ctx = canvas.getContext("2d")!;
+            const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
             const scaleX = canvas.width / canvas.offsetWidth;
             const scaleY = canvas.height / canvas.offsetHeight;
 

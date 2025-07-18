@@ -7,7 +7,8 @@ import useBlobStore from "@/stores/blob";
 import useShouldSubmitStore from "@/stores/should-submit";
 import useUserStore from "@/stores/user";
 import suapbase from "@/utils/supabase";
-import { Check, Download } from "lucide-react";
+import { Check, Download, Icon } from "lucide-react";
+import { SiDiscord, SiHackclub } from "@icons-pack/react-simple-icons";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -20,9 +21,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import useShouldDownloadStore from "@/stores/should-download";
 import { cn } from "@/lib/utils";
 
@@ -117,19 +116,48 @@ export default function Hero() {
                                     <div className="flex flex-col gap-4 items-center">
                                         <span className="px-6 text-balance opacity-75">
                                             please login{" "}
-                                            <a
-                                                className="underline underline-offset-2"
-                                                href="/auth/login/discord"
-                                            >
-                                                here
-                                            </a>{" "}
+                                            <Dialog>
+                                                <DialogTrigger className="underline underline-offset-2 cursor-pointer font-semibold">
+                                                    here
+                                                </DialogTrigger>
+                                                <DialogContent>
+                                                    <DialogTitle>
+                                                        oauth
+                                                    </DialogTitle>
+                                                    <DialogDescription>
+                                                        we use oauth to make
+                                                        sure people follow the
+                                                        rules and to block
+                                                        anyone who doesn't.
+                                                    </DialogDescription>
+                                                    <div className="flex gap-2 w-full justify-end">
+                                                        <Button
+                                                            size={"lg"}
+                                                            onClick={() =>
+                                                                (location.href =
+                                                                    "/auth/login/discord")
+                                                            }
+                                                        >
+                                                            <SiDiscord />
+                                                            discord
+                                                        </Button>
+                                                        <Button
+                                                            size={"lg"}
+                                                            onClick={() =>
+                                                                (location.href =
+                                                                    "/auth/login/slack_oidc")
+                                                            }
+                                                        >
+                                                            <SiHackclub />
+                                                            slack (hackclub)
+                                                        </Button>
+                                                    </div>
+                                                </DialogContent>
+                                            </Dialog>{" "}
                                             to
                                             <br />
                                             start drawing!
                                         </span>
-                                        {/* <Button className="w-fit">
-                                            sign in
-                                        </Button> */}
                                     </div>
                                 </div>
                             )}
@@ -166,6 +194,7 @@ export default function Hero() {
                                             })
                                         }
                                         autoFocus
+                                        required
                                     />
                                     <DialogFooter>
                                         <DialogClose asChild>
