@@ -25,6 +25,8 @@ import {
 } from "./ui/dialog";
 import { Textarea } from "./ui/textarea";
 import useUserStore from "@/stores/user";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function Explore() {
     const { user } = useUserStore();
@@ -32,9 +34,12 @@ export default function Explore() {
 
     const [searchTerm, setSearchTerm] = useState("");
     const [finalSearchTerm, setFinalSearchTerm] = useState("");
-
-    const [reportDialogOpen, setReportDialogOpen] = useState(false);
     const [reportDescription, setReportDescription] = useState("");
+
+    const searchParams = useSearchParams();
+    const page = parseInt(searchParams.get("page") || "1");
+
+    const router = useRouter();
 
     useEffect(() => {
         const yes = async () => {
@@ -43,7 +48,8 @@ export default function Explore() {
                 .select("*")
                 .ilike("name", `%${finalSearchTerm}%`)
                 .order("created_at", { ascending: false })
-                .limit(12);
+                .range((page - 1) * 12, page * 12 - 1);
+            // .limit(12);
 
             if (!error) {
                 setPics(data);
@@ -53,7 +59,7 @@ export default function Explore() {
         };
 
         yes();
-    }, [finalSearchTerm]);
+    }, [finalSearchTerm, page]);
 
     async function handleSubmit(e: FormEvent) {
         e.preventDefault();
@@ -89,6 +95,14 @@ export default function Explore() {
         }
     }
 
+    const goToPage = (p: number) => {
+        router.push(`/?page=${p}`);
+        window.scrollTo({
+            top: document.body.scrollHeight,
+            behavior: "smooth",
+        });
+    };
+
     return (
         <div className="max-w-6xl mx-auto border-t py-20 px-4 text-center">
             <div className="flex flex-col">
@@ -121,16 +135,29 @@ export default function Explore() {
                         <Pagination>
                             <PaginationContent>
                                 <PaginationItem>
-                                    <PaginationPrevious href="#" />
+                                    <PaginationPrevious
+                                        onClick={() =>
+                                            goToPage(Math.max(1, page - 1))
+                                        }
+                                    />
                                 </PaginationItem>
                                 <PaginationItem>
-                                    <PaginationLink href="#">1</PaginationLink>
+                                    <PaginationLink onClick={() => goToPage(1)}>
+                                        1
+                                    </PaginationLink>
+                                </PaginationItem>
+                                <PaginationItem>
+                                    <PaginationLink onClick={() => goToPage(2)}>
+                                        2
+                                    </PaginationLink>
                                 </PaginationItem>
                                 <PaginationItem>
                                     <PaginationEllipsis />
                                 </PaginationItem>
                                 <PaginationItem>
-                                    <PaginationNext href="#" />
+                                    <PaginationNext
+                                        onClick={() => goToPage(page + 1)}
+                                    />
                                 </PaginationItem>
                             </PaginationContent>
                         </Pagination>
