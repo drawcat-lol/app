@@ -1,6 +1,6 @@
 "use client";
 
-import suapbase from "@/utils/supabase";
+import { suapbase } from "@/lib/utils";
 import { redirect, RedirectType } from "next/navigation";
 import { useEffect } from "react";
 

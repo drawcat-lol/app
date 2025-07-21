@@ -1,6 +1,6 @@
 "use client";
 
-import suapbase from "@/utils/supabase";
+import { suapbase } from "@/lib/utils";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";

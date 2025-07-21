@@ -1,7 +1,7 @@
 "use client";
 
+import { suapbase } from "@/lib/utils";
 import useUserStore from "@/stores/user";
-import suapbase from "@/utils/supabase";
 import { PropsWithChildren, useEffect } from "react";
 
 export default function UserProvider({ children }: PropsWithChildren) {

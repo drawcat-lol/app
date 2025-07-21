@@ -1,2 +1,17 @@
 # drawcat.lol
-its a collection of poorly drawn cats. anyone can submit a cat drawing.
+
+this site lets anyone draw a cat on a 256x256 canvas and share it with the world.
+
+## tech stack
+
+-   nextjs
+-   shadcn
+-   supabase
+
+## getting started
+
+just clone the repo, fill in the values in a `.env.local` file (refer to [`.env.example`](/.env.example)) and run `npm run dev`.
+
+## contributing
+
+this is a personal project and i’d like to keep it that way for now. but feel free to open issues if you spot bugs or have suggestions!

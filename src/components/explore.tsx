@@ -11,9 +11,8 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 import { FormEvent, useEffect, useState } from "react";
-import suapbase from "@/utils/supabase";
+import { suapbase } from "@/lib/utils";
 import { toast } from "sonner";
-import { formatDate } from "@/utils/formatDate";
 import { Input } from "./ui/input";
 import {
     Dialog,
@@ -26,7 +25,7 @@ import {
 } from "./ui/dialog";
 import { Textarea } from "./ui/textarea";
 import useUserStore from "@/stores/user";
-import { useRouter } from "next/navigation";
+import { formatDate } from "@/lib/utils";
 
 export default function Explore({ pageNumber }: { pageNumber: number }) {
     const { user } = useUserStore();
