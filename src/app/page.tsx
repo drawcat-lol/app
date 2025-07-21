@@ -158,7 +158,7 @@ export default function Hero() {
                     <X />
                 </Button>
             </div>
-            <div className="max-w-6xl mx-auto px-4 md:px-6 flex flex-col gap-6 md:gap-6 lg:flex-row py-20">
+            <div className="max-w-6xl mx-auto px-4 md:px-6 flex flex-col gap-16 lg:gap-6 md:gap-6 lg:flex-row py-20">
                 <div className="flex flex-col outline-blue-600 w-fit h-fit text-center lg:text-start mx-auto">
                     <span className="text-6xl font-display font-bold">
                         just draw
