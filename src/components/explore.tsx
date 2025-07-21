@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Button } from "./ui/button";
-import { Check, Cross, Flag, Search, Share2, X } from "lucide-react";
+import { Check, Flag, Search, Share2, X } from "lucide-react";
 import {
     Pagination,
     PaginationContent,
@@ -10,7 +10,7 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
-import { FormEvent, Suspense, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import suapbase from "@/utils/supabase";
 import { toast } from "sonner";
 import { formatDate } from "@/utils/formatDate";
@@ -26,8 +26,9 @@ import {
 } from "./ui/dialog";
 import { Textarea } from "./ui/textarea";
 import useUserStore from "@/stores/user";
+import { useRouter } from "next/navigation";
 
-export default function Explore() {
+export default function Explore({ pageNumber }: { pageNumber: number }) {
     const { user } = useUserStore();
     const [pics, setPics] = useState<any[]>([]);
 
@@ -37,13 +38,12 @@ export default function Explore() {
 
     useEffect(() => {
         const yes = async () => {
-            const { data, error } = await suapbase
+            const { data, count, error } = await suapbase
                 .from("list")
-                .select("*")
+                .select("*", { count: "exact" })
                 .ilike("name", `%${finalSearchTerm}%`)
                 .order("created_at", { ascending: false })
-                // .range((page - 1) * 12, page * 12 - 1);
-                .limit(20);
+                .range((pageNumber - 1) * 12, pageNumber * 12 - 1);
 
             if (!error) {
                 setPics(data);
@@ -53,7 +53,7 @@ export default function Explore() {
         };
 
         yes();
-    }, [finalSearchTerm]);
+    }, [finalSearchTerm, pageNumber]);
 
     async function handleSubmit(e: FormEvent) {
         e.preventDefault();
@@ -84,6 +84,10 @@ export default function Explore() {
         }
     }
 
+    const getDrawingUrl = (uid: string) =>
+        suapbase.storage.from("drawings").getPublicUrl(`${uid}.png`).data
+            .publicUrl;
+
     return (
         <div className="flex flex-col shadow-xl border overflow-hidden rounded-2xl w-full h-fit">
             <div className="p-2 border-b flex gap-2 justify-between w-full">
@@ -104,19 +108,29 @@ export default function Explore() {
                     <Pagination>
                         <PaginationContent>
                             <PaginationItem>
-                                <PaginationPrevious />
+                                <PaginationPrevious
+                                    href={`/?page=${Math.max(
+                                        1,
+                                        pageNumber - 1
+                                    )}`}
+                                ></PaginationPrevious>
                             </PaginationItem>
+
+                            {[1, 2].map((page) => (
+                                <PaginationItem key={page}>
+                                    <PaginationLink
+                                        href={`/?page=${page}`}
+                                        isActive={page === pageNumber}
+                                    >
+                                        {page}
+                                    </PaginationLink>
+                                </PaginationItem>
+                            ))}
+
                             <PaginationItem>
-                                <PaginationLink>1</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationLink>2</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationEllipsis />
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationNext />
+                                <PaginationNext
+                                    href={`/?page=${pageNumber + 1}`}
+                                />
                             </PaginationItem>
                         </PaginationContent>
                     </Pagination>
@@ -139,16 +153,12 @@ export default function Explore() {
                                 <div className="overflow-hidden">
                                     <Image
                                         className="w-full aspect-square group-hover:scale-105 duration-175"
-                                        src={
-                                            suapbase.storage
-                                                .from("drawings")
-                                                .getPublicUrl(`${item.uid}.png`)
-                                                .data.publicUrl
-                                        }
+                                        src={getDrawingUrl(item.uid)}
                                         width={256}
                                         height={256}
                                         alt="cat drawing"
                                         draggable={false}
+                                        loading={"lazy"}
                                     />
                                 </div>
                                 <div className="p-4 flex flex-col gap-2 absolute bg-white bottom-0 translate-y-full group-hover:translate-y-0 duration-175 w-full border-t">
@@ -174,34 +184,44 @@ export default function Explore() {
                                                         <DialogDescription
                                                             asChild
                                                         >
-                                                            <p className="text-muted-foreground text-sm">
-                                                                you're about to
-                                                                report this user
-                                                                for submitting a
-                                                                drawing that
-                                                                breaks the
-                                                                rules. drawings
-                                                                usually get
-                                                                reported for
-                                                                reasons like:
-                                                                <br />
-                                                            </p>
-                                                            {/* <ul className="list-disc list-inside text-muted-foreground text-sm">
-                                                                <li>
-                                                                    it's NSFW
-                                                                </li>
-                                                                <li>
-                                                                    it's not a
-                                                                    cat
-                                                                </li>
-                                                                <li>
-                                                                    it's a dog
-                                                                </li>
-                                                                <li>
-                                                                    it contains
-                                                                    gore
-                                                                </li>
-                                                            </ul> */}
+                                                            <div>
+                                                                <p className="text-muted-foreground text-sm">
+                                                                    you're about
+                                                                    to report
+                                                                    this user
+                                                                    for
+                                                                    submitting a
+                                                                    drawing that
+                                                                    breaks the
+                                                                    rules.
+                                                                    drawings
+                                                                    usually get
+                                                                    reported for
+                                                                    reasons
+                                                                    like:
+                                                                    <br />
+                                                                    <br />
+                                                                </p>
+                                                                <ul className="list-disc list-inside text-muted-foreground text-sm">
+                                                                    <li>
+                                                                        it's
+                                                                        NSFW
+                                                                    </li>
+                                                                    <li>
+                                                                        it's not
+                                                                        a cat
+                                                                    </li>
+                                                                    <li>
+                                                                        it's a
+                                                                        dog
+                                                                    </li>
+                                                                    <li>
+                                                                        it
+                                                                        contains
+                                                                        gore
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
                                                         </DialogDescription>
                                                     </DialogHeader>
                                                     <Textarea

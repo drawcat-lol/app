@@ -29,6 +29,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function Hero() {
     const { user } = useUserStore();
@@ -40,6 +41,19 @@ export default function Hero() {
     const [submitForm, setSubmitForm] = useState({ name: "" });
     const [signupbro, setSignupbro] = useState(false);
 
+    const params = useSearchParams();
+    const router = useRouter();
+
+    const pageNumber = params.get("page");
+
+    useEffect(() => {
+        const page = parseInt(params.get("page") || "0");
+
+        if (!page || page <= 0) {
+            router.replace("?page=1");
+        }
+    }, [params, router]);
+
     function handleSubmit() {
         setShouldSubmit(true);
     }
@@ -49,15 +63,11 @@ export default function Hero() {
     }
 
     useEffect(() => {
-        if (user) {
-            setTimeout(() => {
-                setSignupbro(false);
-            }, 3000);
-        } else {
-            setTimeout(() => {
-                setSignupbro(true);
-            }, 3000);
-        }
+        const timeout = setTimeout(() => {
+            setSignupbro(!user); // show banner only if user is not signed in
+        }, 2000);
+
+        return () => clearTimeout(timeout); // cleanup on user change
     }, [user]);
 
     useEffect(() => {
@@ -98,9 +108,11 @@ export default function Hero() {
         if (shouldDownload && blob) {
             const url = URL.createObjectURL(blob);
             const a = document.createElement("a");
+
             a.href = url;
             a.download = "cat_drawing.png";
             a.click();
+
             URL.revokeObjectURL(url);
         }
     }, [shouldDownload, blob]);
@@ -109,7 +121,7 @@ export default function Hero() {
         <>
             <div
                 className={cn(
-                    "fixed w-full p-2 bg-orange-50 border-b flex text-sm items-center duration-200",
+                    "fixed w-full p-2 bg-orange-50 border-b flex text-sm items-center duration-200 z-40",
                     signupbro ? "translate-y-0" : "-translate-y-full"
                 )}
             >
@@ -175,7 +187,7 @@ export default function Hero() {
                         <CanvasWrapper />
                     </div>
 
-                    <div className="mt-10 flex gap-2">
+                    <div className="mt-10 flex gap-2 justify-center lg:justify-start">
                         <Dialog>
                             <DialogTrigger type="button" asChild>
                                 <Button
@@ -230,7 +242,7 @@ export default function Hero() {
                         </Button>
                     </div>
                 </div>
-                <Explore />
+                <Explore pageNumber={parseInt(pageNumber || "1")} />
             </div>
             {user && (
                 <div className="fixed bottom-0 left-0 p-4">
