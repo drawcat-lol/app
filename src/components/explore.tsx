@@ -40,8 +40,6 @@ export default function Explore() {
     const searchParams = useSearchParams();
     const page = parseInt(searchParams.get("page") || "1");
 
-    const router = useRouter();
-
     useEffect(() => {
         const yes = async () => {
             const { data, error } = await suapbase
@@ -91,10 +89,6 @@ export default function Explore() {
         }
     }
 
-    const goToPage = (p: number) => {
-        router.push(`/?page=${p}`);
-    };
-
     return (
         <div className="flex flex-col shadow-xl border overflow-hidden rounded-2xl w-full h-fit">
             <div className="p-2 border-b flex gap-2 justify-between w-full">
@@ -115,29 +109,19 @@ export default function Explore() {
                     <Pagination>
                         <PaginationContent>
                             <PaginationItem>
-                                <PaginationPrevious
-                                    onClick={() =>
-                                        goToPage(Math.max(1, page - 1))
-                                    }
-                                />
+                                <PaginationPrevious />
                             </PaginationItem>
                             <PaginationItem>
-                                <PaginationLink onClick={() => goToPage(1)}>
-                                    1
-                                </PaginationLink>
+                                <PaginationLink>1</PaginationLink>
                             </PaginationItem>
                             <PaginationItem>
-                                <PaginationLink onClick={() => goToPage(2)}>
-                                    2
-                                </PaginationLink>
+                                <PaginationLink>2</PaginationLink>
                             </PaginationItem>
                             <PaginationItem>
                                 <PaginationEllipsis />
                             </PaginationItem>
                             <PaginationItem>
-                                <PaginationNext
-                                    onClick={() => goToPage(page + 1)}
-                                />
+                                <PaginationNext />
                             </PaginationItem>
                         </PaginationContent>
                     </Pagination>
