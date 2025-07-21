@@ -7,7 +7,7 @@ import useBlobStore from "@/stores/blob";
 import useShouldSubmitStore from "@/stores/should-submit";
 import useUserStore from "@/stores/user";
 import suapbase from "@/utils/supabase";
-import { Check, Download, Icon } from "lucide-react";
+import { Check, Download, Icon, LogOut, X } from "lucide-react";
 import { SiDiscord, SiHackclub } from "@icons-pack/react-simple-icons";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -23,6 +23,11 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import useShouldDownloadStore from "@/stores/should-download";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 export default function Hero() {
@@ -33,6 +38,7 @@ export default function Hero() {
     const { blob } = useBlobStore();
 
     const [submitForm, setSubmitForm] = useState({ name: "" });
+    const [signupbro, setSignupbro] = useState(false);
 
     function handleSubmit() {
         setShouldSubmit(true);
@@ -41,6 +47,18 @@ export default function Hero() {
     function handleDownload() {
         setShouldDownload(true);
     }
+
+    useEffect(() => {
+        if (user) {
+            setTimeout(() => {
+                setSignupbro(false);
+            }, 3000);
+        } else {
+            setTimeout(() => {
+                setSignupbro(true);
+            }, 3000);
+        }
+    }, [user]);
 
     useEffect(() => {
         if (!user || !blob || !shouldSubmit) return;
@@ -89,139 +107,149 @@ export default function Hero() {
 
     return (
         <>
-            <div className="bg-white [background:radial-gradient(125%_125%_at_50%_10%,#fff_40%,rgb(255,140,55,0.5)_100%)]">
-                <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-                    <div className="flex flex-col">
-                        <span className="text-6xl font-display font-bold">
-                            just draw
-                            <br />a cat lol
-                        </span>
+            <div
+                className={cn(
+                    "fixed w-full p-2 bg-orange-50 border-b flex text-sm items-center duration-200",
+                    signupbro ? "translate-y-0" : "-translate-y-full"
+                )}
+            >
+                <div className="mx-auto">
+                    please login{" "}
+                    <Dialog>
+                        <DialogTrigger className="underline underline-offset-2 cursor-pointer font-semibold">
+                            here
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogTitle>oauth</DialogTitle>
+                            <DialogDescription>
+                                we use oauth to make sure people follow the
+                                rules and to block anyone who doesn't.
+                            </DialogDescription>
+                            <div className="flex gap-2 w-full justify-end">
+                                <Button
+                                    size={"lg"}
+                                    onClick={() =>
+                                        (location.href = "/auth/login/discord")
+                                    }
+                                >
+                                    <SiDiscord />
+                                    discord
+                                </Button>
+                                <Button
+                                    size={"lg"}
+                                    onClick={() =>
+                                        (location.href =
+                                            "/auth/login/slack_oidc")
+                                    }
+                                >
+                                    <SiHackclub />
+                                    slack (hackclub)
+                                </Button>
+                            </div>
+                        </DialogContent>
+                    </Dialog>{" "}
+                    to submit your drawing!
+                </div>
+                <Button
+                    size={"icon"}
+                    variant={"link"}
+                    className="cursor-pointer"
+                >
+                    <X />
+                </Button>
+            </div>
+            <div className="max-w-6xl mx-auto px-4 md:px-6 flex flex-col gap-6 md:gap-6 lg:flex-row py-20">
+                <div className="flex flex-col outline-blue-600 w-fit h-fit text-center lg:text-start mx-auto">
+                    <span className="text-6xl font-display font-bold">
+                        just draw
+                        <br />a cat lol
+                    </span>
 
-                        <span className="mt-8 text-lg text-balance opacity-75">
-                            bad at drawing? that's purrfect.
-                            <br />
-                            we love poorly drawn cats.
-                        </span>
+                    <span className="mt-8 text-lg text-balance opacity-75">
+                        bad at drawing? that's purrfect.
+                        <br />
+                        we love poorly drawn cats.
+                    </span>
 
-                        <div
-                            className={cn(
-                                "w-fit mx-auto mt-8 duration-200",
-                                !user &&
-                                    "relative overflow-hidden rounded-2xl border"
-                            )}
+                    <div className="w-fit mt-8">
+                        <CanvasWrapper />
+                    </div>
+
+                    <div className="mt-10 flex gap-2">
+                        <Dialog>
+                            <DialogTrigger type="button" asChild>
+                                <Button
+                                    size={"lg"}
+                                    disabled={user ? false : true}
+                                >
+                                    <Check />
+                                    submit
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>
+                                        name your masterpiece
+                                    </DialogTitle>
+                                    <DialogDescription>
+                                        give your drwaing a name so it can be
+                                        easily searched up!
+                                    </DialogDescription>
+                                </DialogHeader>
+                                <Input
+                                    placeholder="black cat"
+                                    onChange={(e) =>
+                                        setSubmitForm({
+                                            name: e.target.value,
+                                        })
+                                    }
+                                    autoFocus
+                                    required
+                                />
+                                <DialogFooter>
+                                    <DialogClose asChild>
+                                        <Button
+                                            size={"lg"}
+                                            onClick={handleSubmit}
+                                        >
+                                            <Check />
+                                            confirm
+                                        </Button>
+                                    </DialogClose>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
+
+                        <Button
+                            variant={"ghost"}
+                            size={"lg"}
+                            onClick={handleDownload}
                         >
-                            {!user && (
-                                <div className="absolute inset-0 backdrop-blur-[2px] z-10 bg-white/75 flex justify-center items-center">
-                                    <div className="flex flex-col gap-4 items-center">
-                                        <span className="px-6 text-balance opacity-75">
-                                            please login{" "}
-                                            <Dialog>
-                                                <DialogTrigger className="underline underline-offset-2 cursor-pointer font-semibold">
-                                                    here
-                                                </DialogTrigger>
-                                                <DialogContent>
-                                                    <DialogTitle>
-                                                        oauth
-                                                    </DialogTitle>
-                                                    <DialogDescription>
-                                                        we use oauth to make
-                                                        sure people follow the
-                                                        rules and to block
-                                                        anyone who doesn't.
-                                                    </DialogDescription>
-                                                    <div className="flex gap-2 w-full justify-end">
-                                                        <Button
-                                                            size={"lg"}
-                                                            onClick={() =>
-                                                                (location.href =
-                                                                    "/auth/login/discord")
-                                                            }
-                                                        >
-                                                            <SiDiscord />
-                                                            discord
-                                                        </Button>
-                                                        <Button
-                                                            size={"lg"}
-                                                            onClick={() =>
-                                                                (location.href =
-                                                                    "/auth/login/slack_oidc")
-                                                            }
-                                                        >
-                                                            <SiHackclub />
-                                                            slack (hackclub)
-                                                        </Button>
-                                                    </div>
-                                                </DialogContent>
-                                            </Dialog>{" "}
-                                            to
-                                            <br />
-                                            start drawing!
-                                        </span>
-                                    </div>
-                                </div>
-                            )}
-                            <CanvasWrapper />
-                        </div>
-
-                        <div className="mt-10 flex gap-2 justify-center">
-                            <Dialog>
-                                <DialogTrigger type="button" asChild>
-                                    <Button
-                                        size={"lg"}
-                                        // onClick={handleSubmit}
-                                        disabled={user ? false : true}
-                                    >
-                                        <Check />
-                                        submit
-                                    </Button>
-                                </DialogTrigger>
-                                <DialogContent>
-                                    <DialogHeader>
-                                        <DialogTitle>
-                                            name your masterpiece
-                                        </DialogTitle>
-                                        <DialogDescription>
-                                            give your drwaing a name so it can
-                                            be easily searched up!
-                                        </DialogDescription>
-                                    </DialogHeader>
-                                    <Input
-                                        placeholder="black cat"
-                                        onChange={(e) =>
-                                            setSubmitForm({
-                                                name: e.target.value,
-                                            })
-                                        }
-                                        autoFocus
-                                        required
-                                    />
-                                    <DialogFooter>
-                                        <DialogClose asChild>
-                                            <Button
-                                                size={"lg"}
-                                                onClick={handleSubmit}
-                                            >
-                                                <Check />
-                                                confirm
-                                            </Button>
-                                        </DialogClose>
-                                    </DialogFooter>
-                                </DialogContent>
-                            </Dialog>
-
-                            <Button
-                                variant={"ghost"}
-                                size={"lg"}
-                                onClick={handleDownload}
-                            >
-                                <Download />
-                                download png
-                            </Button>
-                        </div>
+                            <Download />
+                            download png
+                        </Button>
                     </div>
                 </div>
+                <Explore />
             </div>
-            <Explore />
+            {user && (
+                <div className="fixed bottom-0 left-0 p-4">
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                size={"icon"}
+                                variant={"outline"}
+                                onClick={() =>
+                                    (window.location.href = "/auth/logout")
+                                }
+                            >
+                                <LogOut />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>log out</TooltipContent>
+                    </Tooltip>
+                </div>
+            )}
         </>
     );
 }

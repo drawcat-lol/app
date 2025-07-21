@@ -1,11 +1,19 @@
 "use client";
 
-import { Circle, Eraser, Pen, Redo, Undo, Upload } from "lucide-react";
+import {
+    Circle,
+    Eraser,
+    Pen,
+    Redo,
+    Undo,
+    Upload,
+} from "lucide-react";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import Canvas, { CanvasHandle } from "./canvas";
+import useFullscreenStore from "@/stores/fullscreen";
 
 export default function CanvasWrapper() {
     const [eraseMode, setEraseMode] = useState(false);
@@ -16,6 +24,8 @@ export default function CanvasWrapper() {
     const canvasRef = useRef<CanvasHandle>(null);
     const inputColorRef = useRef<HTMLInputElement>(null);
     const inputFileRef = useRef<HTMLInputElement>(null);
+
+    const { fullscreen, setFullscreen } = useFullscreenStore();
 
     // handle keyboard undo/redo
     useEffect(() => {
@@ -39,14 +49,6 @@ export default function CanvasWrapper() {
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, []);
 
-    // function handleUndoRedo(value: string) {
-    //     if (value === "undo") {
-    //         canvasRef.current?.undo();
-    //     } else {
-    //         canvasRef.current?.redo();
-    //     }
-    // }
-
     function handleUndo() {
         canvasRef.current?.undo();
     }
@@ -62,7 +64,7 @@ export default function CanvasWrapper() {
     }
 
     return (
-        <div className="flex flex-col border shadow-2xl w-fit rounded-2xl overflow-hidden">
+        <div className="flex flex-col border shadow-xl w-fit rounded-2xl overflow-hidden">
             <div className="p-2 border-b flex gap-2 justify-between w-full">
                 <div className="flex gap-2">
                     <ToggleGroup
@@ -140,7 +142,7 @@ export default function CanvasWrapper() {
                     value={[eraseMode ? eraserSize : strokeWidth]}
                 />
             </div>
-            <div className="aspect-square">
+            <div className="relative">
                 <Canvas
                     ref={canvasRef}
                     eraseMode={eraseMode}
@@ -148,6 +150,14 @@ export default function CanvasWrapper() {
                     eraserSize={eraserSize}
                     strokeColor={strokeColor}
                 />
+                {/* <Button
+                    variant="outline"
+                    onClick={() => setFullscreen(!fullscreen)}
+                    size={"icon"}
+                    className="absolute bottom-2 right-2"
+                >
+                    <Maximize />
+                </Button> */}
             </div>
         </div>
     );
