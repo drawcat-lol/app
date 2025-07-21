@@ -26,8 +26,6 @@ import {
 } from "./ui/dialog";
 import { Textarea } from "./ui/textarea";
 import useUserStore from "@/stores/user";
-import { useSearchParams } from "next/navigation";
-import { useRouter } from "next/navigation";
 
 export default function Explore() {
     const { user } = useUserStore();
@@ -36,9 +34,6 @@ export default function Explore() {
     const [searchTerm, setSearchTerm] = useState("");
     const [finalSearchTerm, setFinalSearchTerm] = useState("");
     const [reportDescription, setReportDescription] = useState("");
-
-    const searchParams = useSearchParams();
-    const page = parseInt(searchParams.get("page") || "1");
 
     useEffect(() => {
         const yes = async () => {
@@ -58,7 +53,7 @@ export default function Explore() {
         };
 
         yes();
-    }, [finalSearchTerm, page]);
+    }, [finalSearchTerm]);
 
     async function handleSubmit(e: FormEvent) {
         e.preventDefault();
