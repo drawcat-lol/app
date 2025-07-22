@@ -1,10 +1,9 @@
 import Image from "next/image";
 import { Button } from "./ui/button";
-import { Check, Flag, Search, Share2, X } from "lucide-react";
+import { Search, Share2, X } from "lucide-react";
 import {
     Pagination,
     PaginationContent,
-    PaginationEllipsis,
     PaginationItem,
     PaginationLink,
     PaginationNext,
@@ -23,17 +22,14 @@ import {
     DialogFooter,
     DialogHeader,
 } from "./ui/dialog";
-import { Textarea } from "./ui/textarea";
-import useUserStore from "@/stores/user";
 import { formatDate } from "@/lib/utils";
+import ReportButton from "./report-button";
 
 export default function Explore({ pageNumber }: { pageNumber: number }) {
-    const { user } = useUserStore();
     const [pics, setPics] = useState<any[]>([]);
 
     const [searchTerm, setSearchTerm] = useState("");
     const [finalSearchTerm, setFinalSearchTerm] = useState("");
-    const [reportDescription, setReportDescription] = useState("");
 
     useEffect(() => {
         const yes = async () => {
@@ -57,30 +53,6 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
     async function handleSubmit(e: FormEvent) {
         e.preventDefault();
         setFinalSearchTerm(searchTerm);
-    }
-
-    async function handleReport(reporting: string) {
-        if (user) {
-            const { error } = await suapbase.from("reports").insert({
-                description: reportDescription,
-                from: user.id,
-                reporting,
-            });
-
-            if (error) {
-                toast.error("something went wrong! try again later.", {
-                    richColors: true,
-                });
-            } else {
-                toast.success("we've recieved your report!", {
-                    richColors: true,
-                });
-
-                setReportDescription("");
-            }
-        } else {
-            toast.warning("please log in first!", { richColors: true });
-        }
     }
 
     const getDrawingUrl = (uid: string) =>
@@ -166,89 +138,7 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                                     </span>
                                     <div className="flex justify-between items-end">
                                         <div className="flex gap-2">
-                                            <Dialog>
-                                                <DialogTrigger asChild>
-                                                    <Button
-                                                        variant={"outline"}
-                                                        size={"icon"}
-                                                    >
-                                                        <Flag />
-                                                    </Button>
-                                                </DialogTrigger>
-                                                <DialogContent>
-                                                    <DialogHeader>
-                                                        <DialogTitle>
-                                                            report drawing
-                                                        </DialogTitle>
-                                                        <DialogDescription
-                                                            asChild
-                                                        >
-                                                            <div>
-                                                                <p className="text-muted-foreground text-sm">
-                                                                    you're about
-                                                                    to report
-                                                                    this user
-                                                                    for
-                                                                    submitting a
-                                                                    drawing that
-                                                                    breaks the
-                                                                    rules.
-                                                                    drawings
-                                                                    usually get
-                                                                    reported for
-                                                                    reasons
-                                                                    like:
-                                                                    <br />
-                                                                    <br />
-                                                                </p>
-                                                                <ul className="list-disc list-inside text-muted-foreground text-sm">
-                                                                    <li>
-                                                                        it's
-                                                                        NSFW
-                                                                    </li>
-                                                                    <li>
-                                                                        it's not
-                                                                        a cat
-                                                                    </li>
-                                                                    <li>
-                                                                        it's a
-                                                                        dog
-                                                                    </li>
-                                                                    <li>
-                                                                        it
-                                                                        contains
-                                                                        gore
-                                                                    </li>
-                                                                </ul>
-                                                            </div>
-                                                        </DialogDescription>
-                                                    </DialogHeader>
-                                                    <Textarea
-                                                        placeholder="describe what's wrong with this drawing"
-                                                        value={
-                                                            reportDescription
-                                                        }
-                                                        onChange={(e) =>
-                                                            setReportDescription(
-                                                                e.target.value
-                                                            )
-                                                        }
-                                                    />
-                                                    <DialogFooter>
-                                                        <Button
-                                                            size={"lg"}
-                                                            onClick={() =>
-                                                                handleReport(
-                                                                    item.uid
-                                                                )
-                                                            }
-                                                        >
-                                                            <Check />
-                                                            submit
-                                                        </Button>
-                                                    </DialogFooter>
-                                                </DialogContent>
-                                            </Dialog>
+                                            <ReportButton item={item} />
                                             <Dialog>
                                                 <DialogTrigger asChild>
                                                     <Button
@@ -265,14 +155,12 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                                                         </DialogTitle>
                                                         <DialogDescription>
                                                             here's a link to
-                                                            your drawing!
+                                                            this drawing!
                                                         </DialogDescription>
                                                     </DialogHeader>
                                                     <Input
                                                         readOnly
-                                                        defaultValue={
-                                                            "https://drawcat.lol"
-                                                        }
+                                                        defaultValue={`${window.location.origin}/${item.uid}`}
                                                     />
                                                     <DialogFooter>
                                                         <Button size={"lg"}>
