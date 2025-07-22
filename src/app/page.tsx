@@ -279,16 +279,13 @@ export default function Hero() {
                                     if you found any bugs or have suggestions,
                                     please open an issue in our github
                                     repository{" "}
-                                    <a href="https://github.com/ronykax/drawcat.lol" className="underline underline-offset-2">
+                                    <a
+                                        href="https://github.com/ronykax/drawcat.lol"
+                                        className="underline underline-offset-2"
+                                    >
                                         here
                                     </a>
                                     .
-                                    <br />
-                                    <br />
-                                    <i>
-                                        ~ in a world full of AI slop, there's
-                                        drawcat.lol.
-                                    </i>
                                 </DialogDescription>
                             </DialogHeader>
                         </DialogContent>
