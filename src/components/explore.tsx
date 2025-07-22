@@ -31,6 +31,8 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
     const [searchTerm, setSearchTerm] = useState("");
     const [finalSearchTerm, setFinalSearchTerm] = useState("");
 
+    const [perPageLimit, setPerPageLimit] = useState(100);
+
     useEffect(() => {
         const yes = async () => {
             const { data, count, error } = await suapbase
@@ -38,7 +40,7 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                 .select("*", { count: "exact" })
                 .ilike("name", `%${finalSearchTerm}%`)
                 .order("created_at", { ascending: false })
-                .range((pageNumber - 1) * 12, pageNumber * 12 - 1);
+                .range((pageNumber - 1) * perPageLimit, pageNumber * perPageLimit - 1);
 
             if (!error) {
                 setPics(data);

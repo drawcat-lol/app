@@ -7,7 +7,7 @@ import useBlobStore from "@/stores/blob";
 import useShouldSubmitStore from "@/stores/should-submit";
 import useUserStore from "@/stores/user";
 import { suapbase } from "@/lib/utils";
-import { Check, Download, LogOut, X } from "lucide-react";
+import { Check, CircleQuestionMark, Download, LogOut, X } from "lucide-react";
 import { SiDiscord, SiHackclub } from "@icons-pack/react-simple-icons";
 import { Suspense, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -234,8 +234,8 @@ export default function Hero() {
                     <ExploreWrapper />
                 </Suspense>
             </div>
-            {user && (
-                <div className="fixed bottom-0 left-0 p-4">
+            <div className="fixed bottom-0 left-0 p-4 flex gap-2">
+                {user && (
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Button
@@ -250,8 +250,52 @@ export default function Hero() {
                         </TooltipTrigger>
                         <TooltipContent>log out</TooltipContent>
                     </Tooltip>
-                </div>
-            )}
+                )}
+                <Tooltip>
+                    <Dialog>
+                        <TooltipTrigger asChild>
+                            <DialogTrigger asChild>
+                                <Button size="icon" variant="outline">
+                                    <CircleQuestionMark />
+                                </Button>
+                            </DialogTrigger>
+                        </TooltipTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>what is this?</DialogTitle>
+                                <DialogDescription>
+                                    drawcat.lol is a place to submit cat
+                                    drawings. good or bad, it doesn't matter -
+                                    that's the whole charm.
+                                    <br />
+                                    <br />
+                                    it was inspired by draw-dino, a similar
+                                    project where students at hack club submit
+                                    dino drawings. but as a hack clubber and a
+                                    cat lover, i wanted to make my own spin on
+                                    it.
+                                    <br />
+                                    <br />
+                                    if you found any bugs or have suggestions,
+                                    please open an issue in our github
+                                    repository{" "}
+                                    <a href="https://github.com/ronykax/drawcat.lol" className="underline underline-offset-2">
+                                        here
+                                    </a>
+                                    .
+                                    <br />
+                                    <br />
+                                    <i>
+                                        ~ in a world full of AI slop, there's
+                                        drawcat.lol.
+                                    </i>
+                                </DialogDescription>
+                            </DialogHeader>
+                        </DialogContent>
+                    </Dialog>
+                    <TooltipContent>lore</TooltipContent>
+                </Tooltip>
+            </div>
         </>
     );
 }
