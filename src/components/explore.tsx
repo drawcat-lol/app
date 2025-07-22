@@ -31,7 +31,7 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
     const [searchTerm, setSearchTerm] = useState("");
     const [finalSearchTerm, setFinalSearchTerm] = useState("");
 
-    const [perPageLimit, setPerPageLimit] = useState(100);
+    const [perPageLimit, setPerPageLimit] = useState(12);
 
     useEffect(() => {
         const yes = async () => {
