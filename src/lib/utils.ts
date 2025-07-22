@@ -13,5 +13,26 @@ export const suapbase = createClient(
 
 export function formatDate(iso: string): string {
     const date = new Date(iso);
-    return date.toLocaleString();
+    const now = new Date();
+
+    const diffMs = now.getTime() - date.getTime();
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) {
+        return `Today at ${date.toLocaleTimeString("en-US", {
+            hour: "numeric",
+            minute: "2-digit",
+        })}`;
+    } else if (diffDays === 1) {
+        return `Yesterday at ${date.toLocaleTimeString("en-US", {
+            hour: "numeric",
+            minute: "2-digit",
+        })}`;
+    } else {
+        return date.toLocaleDateString("en-US", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+        });
+    }
 }

@@ -7,7 +7,14 @@ import useBlobStore from "@/stores/blob";
 import useShouldSubmitStore from "@/stores/should-submit";
 import useUserStore from "@/stores/user";
 import { suapbase } from "@/lib/utils";
-import { Check, CircleQuestionMark, Download, LogOut, X } from "lucide-react";
+import {
+    Check,
+    CircleQuestionMark,
+    Download,
+    ExternalLink,
+    LogOut,
+    X,
+} from "lucide-react";
 import { SiDiscord, SiHackclub } from "@icons-pack/react-simple-icons";
 import { Suspense, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -109,7 +116,7 @@ export default function Hero() {
         <>
             <div
                 className={cn(
-                    "fixed w-full p-2 bg-orange-50 border-b flex text-sm items-center duration-200 z-40",
+                    "fixed w-full p-4 bg-orange-50 border-b flex text-sm items-center duration-200 z-40",
                     signupbro ? "translate-y-0" : "-translate-y-full"
                 )}
             >
@@ -150,13 +157,6 @@ export default function Hero() {
                     </Dialog>{" "}
                     to submit your drawing!
                 </div>
-                <Button
-                    size={"icon"}
-                    variant={"link"}
-                    className="cursor-pointer"
-                >
-                    <X />
-                </Button>
             </div>
             <div className="max-w-6xl mx-auto px-4 md:px-6 flex flex-col gap-16 lg:gap-6 md:gap-6 lg:flex-row py-20">
                 <div className="flex flex-col outline-blue-600 w-fit h-fit text-center lg:text-start mx-auto">
@@ -262,7 +262,7 @@ export default function Hero() {
                         </TooltipTrigger>
                         <DialogContent>
                             <DialogHeader>
-                                <DialogTitle>what is this?</DialogTitle>
+                                <DialogTitle>lore</DialogTitle>
                                 <DialogDescription>
                                     drawcat.lol is a place to submit cat
                                     drawings. good or bad, it doesn't matter -
@@ -288,6 +288,34 @@ export default function Hero() {
                                     .
                                 </DialogDescription>
                             </DialogHeader>
+                            <DialogFooter>
+                                <a
+                                    href="https://github.com/ronykax"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    <Button
+                                        variant="outline"
+                                        className="cursor-pointer"
+                                    >
+                                        <ExternalLink />
+                                        github
+                                    </Button>
+                                </a>
+                                <a
+                                    href="https://ronykax.xyz"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    <Button
+                                        variant="outline"
+                                        className="cursor-pointer"
+                                    >
+                                        <ExternalLink />
+                                        ronykax.xyz
+                                    </Button>
+                                </a>
+                            </DialogFooter>
                         </DialogContent>
                     </Dialog>
                     <TooltipContent>lore</TooltipContent>

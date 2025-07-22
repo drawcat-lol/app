@@ -40,13 +40,18 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                 .select("*", { count: "exact" })
                 .ilike("name", `%${finalSearchTerm}%`)
                 .order("created_at", { ascending: false })
-                .range((pageNumber - 1) * perPageLimit, pageNumber * perPageLimit - 1);
+                .range(
+                    (pageNumber - 1) * perPageLimit,
+                    pageNumber * perPageLimit - 1
+                );
 
             if (!error) {
                 setPics(data);
             } else {
                 toast.error("couldn't fetch drawings!", { richColors: true });
             }
+
+            count && console.log("total items: ", count);
         };
 
         yes();
@@ -61,10 +66,15 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
         suapbase.storage.from("drawings").getPublicUrl(`${uid}.png`).data
             .publicUrl;
 
+    const getPages = (pageNumber: number) => {
+        if (pageNumber <= 2) return [1, 2, 3];
+        return [pageNumber - 1, pageNumber, pageNumber + 1];
+    };
+
     return (
         <div className="flex flex-col shadow-xl border overflow-hidden rounded-2xl w-full h-fit">
-            <div className="p-2 border-b flex gap-2 justify-between w-full">
-                <div className="relative w-fit">
+            <div className="p-2 border-b flex gap-2 justify-between w-full flex-col items-end sm:flex-row">
+                <div className="relative w-full sm:w-fit">
                     <form onSubmit={handleSubmit}>
                         <Input
                             placeholder="search drawings"
@@ -89,7 +99,7 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                                 ></PaginationPrevious>
                             </PaginationItem>
 
-                            {[1, 2].map((page) => (
+                            {getPages(pageNumber).map((page) => (
                                 <PaginationItem key={page}>
                                     <PaginationLink
                                         href={`/?page=${page}`}
@@ -125,7 +135,7 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                             >
                                 <div className="overflow-hidden">
                                     <Image
-                                        className="w-full aspect-square group-hover:scale-105 duration-175"
+                                        className="w-full aspect-square group-hover:scale-110 duration-175"
                                         src={getDrawingUrl(item.uid)}
                                         width={256}
                                         height={256}
@@ -135,10 +145,18 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                                     />
                                 </div>
                                 <div className="p-4 flex flex-col gap-2 absolute bg-white bottom-0 translate-y-full group-hover:translate-y-0 duration-175 w-full border-t">
-                                    <span className="font-bold font-display text-xl">
+                                    <span className="text-sm font-semibold">
                                         {item.name}
                                     </span>
-                                    <div className="flex justify-between items-end">
+                                    <div className="flex justify-between">
+                                        <div className="flex flex-col gap-1">
+                                            <span className="text-xs font-semibold opacity-50">
+                                                {item.uid.slice(0, 8) + "..."}
+                                            </span>
+                                            <span className="text-xs font-semibold opacity-50">
+                                                {formatDate(item.created_at)}
+                                            </span>
+                                        </div>
                                         <div className="flex gap-2">
                                             <ReportButton item={item} />
                                             <Dialog>
@@ -172,15 +190,6 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                                                     </DialogFooter>
                                                 </DialogContent>
                                             </Dialog>
-                                        </div>
-
-                                        <div className="flex flex-col gap-1 items-end">
-                                            <span className="text-xs font-semibold opacity-50">
-                                                {"..." + item.uid.slice(-10)}
-                                            </span>
-                                            <span className="text-xs font-semibold opacity-50">
-                                                {formatDate(item.created_at)}
-                                            </span>
                                         </div>
                                     </div>
                                 </div>
