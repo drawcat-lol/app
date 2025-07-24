@@ -38,6 +38,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
 import ExploreWrapper from "@/components/explore-wrapper";
+import useShouldDraftStore from "@/stores/should-draft";
 
 export default function Hero() {
     const { user } = useUserStore();
@@ -112,6 +113,25 @@ export default function Hero() {
         }
     }, [shouldDownload, blob]);
 
+    const { shouldDraft, setShouldDraft } = useShouldDraftStore();
+
+    function redirectToSignin(href: string) {
+        setShouldDownload(true);
+        window.location.href = href;
+    }
+
+    useEffect(() => {
+        if (shouldDraft && blob) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64data = reader.result as string;
+                localStorage.setItem("my-blob", base64data);
+                setShouldDraft(false);
+            };
+            reader.readAsDataURL(blob);
+        }
+    }, [shouldDraft]);
+
     return (
         <>
             <div
@@ -136,7 +156,7 @@ export default function Hero() {
                                 <Button
                                     size={"lg"}
                                     onClick={() =>
-                                        (location.href = "/auth/login/discord")
+                                        redirectToSignin("/auth/login/discord")
                                     }
                                 >
                                     <SiDiscord />
@@ -145,8 +165,9 @@ export default function Hero() {
                                 <Button
                                     size={"lg"}
                                     onClick={() =>
-                                        (location.href =
-                                            "/auth/login/slack_oidc")
+                                        redirectToSignin(
+                                            "/auth/login/slack_oidc"
+                                        )
                                     }
                                 >
                                     <SiHackclub />

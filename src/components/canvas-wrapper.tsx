@@ -1,19 +1,14 @@
 "use client";
 
-import {
-    Circle,
-    Eraser,
-    Pen,
-    Redo,
-    Undo,
-    Upload,
-} from "lucide-react";
+import { Circle, Eraser, Pen, Redo, Undo, Upload } from "lucide-react";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import Canvas, { CanvasHandle } from "./canvas";
 import useFullscreenStore from "@/stores/fullscreen";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { HexColorPicker } from "react-colorful";
 
 export default function CanvasWrapper() {
     const [eraseMode, setEraseMode] = useState(false);
@@ -100,20 +95,23 @@ export default function CanvasWrapper() {
                         </ToggleGroupItem>
                     </ToggleGroup>
                 </div>
-                <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => inputColorRef.current?.click()}
-                >
-                    <Circle fill={strokeColor} />
-                    <input
-                        className="hidden"
-                        type="color"
-                        value={strokeColor}
-                        onChange={(e) => setStrokeColor(e.currentTarget.value)}
-                        ref={inputColorRef}
-                    />
-                </Button>
+                <Popover>
+                    <PopoverTrigger asChild>
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => inputColorRef.current?.click()}
+                        >
+                            <Circle fill={strokeColor} />
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent asChild>
+                        <HexColorPicker
+                            color={strokeColor}
+                            onChange={(e) => setStrokeColor(e)}
+                        />
+                    </PopoverContent>
+                </Popover>
                 <Button
                     variant="outline"
                     onClick={() => inputFileRef.current?.click()}

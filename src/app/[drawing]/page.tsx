@@ -19,7 +19,7 @@ export default function Page() {
     useEffect(() => {
         const publicUrl = suapbase.storage
             .from("drawings")
-            .getPublicUrl(`${uid}.png`).data.publicUrl;
+            .getPublicUrl(`${uid}.png`, { download: true }).data.publicUrl;
 
         if (!publicUrl.endsWith("undefined.png")) {
             setUrl(publicUrl);
@@ -39,6 +39,15 @@ export default function Page() {
 
         fetch();
     }, []);
+
+    function downloadDrawing(url: string) {
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
 
     return data !== null ? (
         <>
@@ -70,7 +79,18 @@ export default function Page() {
                         {data.name}
                     </span>
 
-                    <ReportButton item={data} />
+                    <div className="flex gap-2">
+                        <ReportButton item={data} />
+                        {url && (
+                            <Button
+                                size={"icon"}
+                                variant={"outline"}
+                                onClick={() => downloadDrawing(url)}
+                            >
+                                <Download />
+                            </Button>
+                        )}
+                    </div>
                 </div>
             </div>
         </>

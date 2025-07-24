@@ -2,6 +2,7 @@
 
 import useBlobStore from "@/stores/blob";
 import useShouldDownloadStore from "@/stores/should-download";
+import useShouldDraftStore from "@/stores/should-draft";
 import useShouldSubmitStore from "@/stores/should-submit";
 import React, {
     forwardRef,
@@ -28,6 +29,7 @@ const Canvas = forwardRef<CanvasHandle, Props>(
     ({ strokeWidth, strokeColor, eraseMode, eraserSize }, ref) => {
         const { shouldSubmit } = useShouldSubmitStore();
         const { shouldDownload } = useShouldDownloadStore();
+        const { shouldDraft } = useShouldDraftStore();
         const { setBlob } = useBlobStore();
 
         const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -181,11 +183,13 @@ const Canvas = forwardRef<CanvasHandle, Props>(
         }, [shouldSubmit]);
 
         useEffect(() => {
-            if (shouldDownload) {
+            if (shouldDownload || shouldDraft) {
                 const canvas = canvasRef.current!;
                 canvas.toBlob((blob) => setBlob(blob));
             }
-        }, [shouldDownload]);
+
+
+        }, [shouldDownload, shouldDraft]);
 
         return (
             <canvas
