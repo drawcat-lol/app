@@ -51,7 +51,7 @@ export default function ReportButton({ item }: { item: any }) {
                 </Button>
             </DialogTrigger>
             <DialogContent>
-                <DialogHeader>
+                <DialogHeader className="text-start">
                     <DialogTitle>report drawing</DialogTitle>
                     <DialogDescription asChild>
                         <div>

@@ -28,8 +28,6 @@ type Props = {
 const Canvas = forwardRef<CanvasHandle, Props>(
     ({ strokeWidth, strokeColor, eraseMode, eraserSize }, ref) => {
         const { shouldSubmit } = useShouldSubmitStore();
-        const { shouldDownload } = useShouldDownloadStore();
-        const { shouldDraft } = useShouldDraftStore();
         const { setBlob } = useBlobStore();
 
         const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -181,15 +179,6 @@ const Canvas = forwardRef<CanvasHandle, Props>(
                 canvas.toBlob((blob) => setBlob(blob));
             }
         }, [shouldSubmit]);
-
-        useEffect(() => {
-            if (shouldDownload || shouldDraft) {
-                const canvas = canvasRef.current!;
-                canvas.toBlob((blob) => setBlob(blob));
-            }
-
-
-        }, [shouldDownload, shouldDraft]);
 
         return (
             <canvas

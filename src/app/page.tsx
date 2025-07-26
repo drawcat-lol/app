@@ -36,7 +36,6 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { useRouter, useSearchParams } from "next/navigation";
 import ExploreWrapper from "@/components/explore-wrapper";
 import useShouldDraftStore from "@/stores/should-draft";
 
@@ -77,7 +76,7 @@ export default function Hero() {
                 });
 
             const { error: dataUploadError } = await suapbase
-                .from("list")
+                .from("list_v2")
                 .upsert(
                     {
                         uid: user.id,
@@ -113,24 +112,10 @@ export default function Hero() {
         }
     }, [shouldDownload, blob]);
 
-    const { shouldDraft, setShouldDraft } = useShouldDraftStore();
-
     function redirectToSignin(href: string) {
         setShouldDownload(true);
         window.location.href = href;
     }
-
-    useEffect(() => {
-        if (shouldDraft && blob) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                const base64data = reader.result as string;
-                localStorage.setItem("my-blob", base64data);
-                setShouldDraft(false);
-            };
-            reader.readAsDataURL(blob);
-        }
-    }, [shouldDraft]);
 
     return (
         <>

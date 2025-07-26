@@ -27,7 +27,7 @@ export default function Page() {
 
         const fetch = async () => {
             const { data, error } = await suapbase
-                .from("list")
+                .from("list_v2")
                 .select("*")
                 .match({ uid: uid })
                 .single();

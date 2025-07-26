@@ -1,9 +1,10 @@
 import Image from "next/image";
 import { Button } from "./ui/button";
-import { Search, Share2, X } from "lucide-react";
+import { Info, Search, Share2, X } from "lucide-react";
 import {
     Pagination,
     PaginationContent,
+    PaginationEllipsis,
     PaginationItem,
     PaginationLink,
     PaginationNext,
@@ -26,18 +27,19 @@ import { formatDate } from "@/lib/utils";
 import ReportButton from "./report-button";
 
 export default function Explore({ pageNumber }: { pageNumber: number }) {
-    const [pics, setPics] = useState<any[]>([]);
+    const [listItems, setListItems] = useState<any[]>([]);
 
     const [searchTerm, setSearchTerm] = useState("");
     const [finalSearchTerm, setFinalSearchTerm] = useState("");
 
     const [perPageLimit, setPerPageLimit] = useState(12);
+    const [totalItemsCount, setTotalItemsCount] = useState<number | null>(null);
 
     useEffect(() => {
         const yes = async () => {
             const { data, count, error } = await suapbase
-                .from("list")
-                .select("*", { count: "exact" })
+                .from("list_v2")
+                .select("*, profiles:uid(*)", { count: "exact" })
                 .ilike("name", `%${finalSearchTerm}%`)
                 .order("created_at", { ascending: false })
                 .range(
@@ -46,12 +48,11 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                 );
 
             if (!error) {
-                setPics(data);
+                setListItems(data);
+                setTotalItemsCount(count);
             } else {
                 toast.error("couldn't fetch drawings!", { richColors: true });
             }
-
-            count && console.log("total items: ", count);
         };
 
         yes();
@@ -110,6 +111,11 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                                 </PaginationItem>
                             ))}
 
+                            {totalItemsCount &&
+                            totalItemsCount > perPageLimit * 3 ? (
+                                <PaginationEllipsis />
+                            ) : null}
+
                             <PaginationItem>
                                 <PaginationNext
                                     href={`/?page=${pageNumber + 1}`}
@@ -120,7 +126,7 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                 </div>
             </div>
             <div className="w-full">
-                {pics.length === 0 ? (
+                {listItems.length === 0 ? (
                     <div className="p-4">
                         <span className="text-sm font-medium opacity-75">
                             loading...
@@ -128,12 +134,12 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[1px] bg-border">
-                        {pics.map((item, index) => (
+                        {listItems.map((item, index) => (
                             <div
                                 className="w-full flex flex-col text-start overflow-hidden group bg-white relative"
                                 key={index}
                             >
-                                <div className="overflow-hidden">
+                                <div className="overflow-hidden relative">
                                     <Image
                                         className="w-full aspect-square group-hover:scale-110 duration-175"
                                         src={getDrawingUrl(item.uid)}
@@ -143,15 +149,37 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                                         draggable={false}
                                         loading={"lazy"}
                                     />
+
+                                    <div className="absolute p-2 top-0 right-0 block lg:hidden">
+                                        <Button
+                                            size={"icon"}
+                                            variant={"outline"}
+                                        >
+                                            <Info />
+                                        </Button>
+                                    </div>
                                 </div>
                                 <div className="p-4 flex flex-col gap-2 absolute bg-white bottom-0 translate-y-full group-hover:translate-y-0 duration-175 w-full border-t">
                                     <span className="text-sm font-semibold">
                                         {item.name}
                                     </span>
                                     <div className="flex justify-between">
-                                        <div className="flex flex-col gap-1">
+                                        <div className="flex flex-col gap-1 justify-end">
                                             <span className="text-xs font-semibold opacity-50">
-                                                {item.uid.slice(0, 8) + "..."}
+                                                {/* remove #0 at the end for discord users */}
+                                                {(
+                                                    item.profiles
+                                                        .raw_user_meta_data
+                                                        .name as string
+                                                ).endsWith("#0")
+                                                    ? (
+                                                          item.profiles
+                                                              .raw_user_meta_data
+                                                              .name as string
+                                                      ).slice(0, -2)
+                                                    : item.profiles
+                                                          .raw_user_meta_data
+                                                          .name}
                                             </span>
                                             <span className="text-xs font-semibold opacity-50">
                                                 {formatDate(item.created_at)}

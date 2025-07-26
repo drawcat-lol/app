@@ -10,7 +10,15 @@ export default function UserProvider({ children }: PropsWithChildren) {
     useEffect(() => {
         (async () => {
             const { data } = await suapbase.auth.getUser();
-            setUser(data.user);
+            
+            if (data.user) {
+                setUser(data.user);
+
+                await suapbase.from("profiles").upsert({
+                    id: data.user.id,
+                    raw_user_meta_data: data.user.user_metadata,
+                });
+            }
         })();
     }, []);
 
