@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Button } from "./ui/button";
-import { Info, Search, Share2, X } from "lucide-react";
+import { Heart, Info, Search, Share2, X } from "lucide-react";
 import {
     Pagination,
     PaginationContent,
@@ -25,6 +25,7 @@ import {
 } from "./ui/dialog";
 import { formatDate } from "@/lib/utils";
 import ReportButton from "./report-button";
+import useShouldReloadStore from "@/stores/should-reload";
 
 export default function Explore({ pageNumber }: { pageNumber: number }) {
     const [listItems, setListItems] = useState<any[]>([]);
@@ -34,6 +35,8 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
 
     const [perPageLimit, setPerPageLimit] = useState(12);
     const [totalItemsCount, setTotalItemsCount] = useState<number | null>(null);
+
+    const { shouldReload } = useShouldReloadStore();
 
     useEffect(() => {
         const yes = async () => {
@@ -46,7 +49,6 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                     (pageNumber - 1) * perPageLimit,
                     pageNumber * perPageLimit - 1
                 );
-
             if (!error) {
                 setListItems(data);
                 setTotalItemsCount(count);
@@ -54,9 +56,8 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                 toast.error("couldn't fetch drawings!", { richColors: true });
             }
         };
-
         yes();
-    }, [finalSearchTerm, pageNumber]);
+    }, [finalSearchTerm, pageNumber, shouldReload]);
 
     async function handleSubmit(e: FormEvent) {
         e.preventDefault();
@@ -133,10 +134,10 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                         </span>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[1px] bg-border">
+                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-[1px] bg-border">
                         {listItems.map((item, index) => (
                             <div
-                                className="w-full flex flex-col text-start overflow-hidden group bg-white relative"
+                                className="w-full flex flex-col text-start overflow-hidden group bg-background relative"
                                 key={index}
                             >
                                 <div className="overflow-hidden relative">
@@ -158,8 +159,17 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                                             <Info />
                                         </Button>
                                     </div>
+
+                                    <div className="absolute p-2 bottom-0 ring-0">
+                                        <Button
+                                            variant={"outline"}
+                                            size={"icon"}
+                                        >
+                                            <Heart />
+                                        </Button>
+                                    </div>
                                 </div>
-                                <div className="p-4 flex flex-col gap-2 absolute bg-white bottom-0 translate-y-full group-hover:translate-y-0 duration-175 w-full border-t">
+                                <div className="p-4 flex flex-col gap-2 absolute bg-background bottom-0 translate-y-full group-hover:translate-y-0 duration-175 w-full border-t">
                                     <span className="text-sm font-semibold">
                                         {item.name}
                                     </span>

@@ -15,7 +15,11 @@ import {
     LogOut,
     X,
 } from "lucide-react";
-import { SiDiscord, SiHackclub } from "@icons-pack/react-simple-icons";
+import {
+    SiDiscord,
+    SiGithub,
+    SiHackclub,
+} from "@icons-pack/react-simple-icons";
 import { Suspense, useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -38,6 +42,8 @@ import {
 import { cn } from "@/lib/utils";
 import ExploreWrapper from "@/components/explore-wrapper";
 import useShouldDraftStore from "@/stores/should-draft";
+import Footer from "@/components/footer";
+import useShouldReloadStore from "@/stores/should-reload";
 
 export default function Hero() {
     const { user } = useUserStore();
@@ -45,12 +51,14 @@ export default function Hero() {
     const { shouldSubmit, setShouldSubmit } = useShouldSubmitStore();
     const { shouldDownload, setShouldDownload } = useShouldDownloadStore();
     const { blob } = useBlobStore();
+    const { setShouldReload } = useShouldReloadStore();
 
     const [submitForm, setSubmitForm] = useState({ name: "" });
     const [signupbro, setSignupbro] = useState(false);
 
     function handleSubmit() {
         setShouldSubmit(true);
+        setShouldReload(true);
     }
 
     function handleDownload() {
@@ -92,6 +100,7 @@ export default function Hero() {
                 console.log("error upserting: ", dataUploadError);
             } else {
                 toast.success("nice!", { richColors: true });
+                setShouldDownload(true);
             }
         };
 
@@ -132,12 +141,14 @@ export default function Hero() {
                             here
                         </DialogTrigger>
                         <DialogContent>
-                            <DialogTitle>oauth</DialogTitle>
-                            <DialogDescription>
-                                we use oauth to make sure people follow the
-                                rules and to block anyone who doesn't.
-                            </DialogDescription>
-                            <div className="flex gap-2 w-full justify-end">
+                            <DialogHeader>
+                                <DialogTitle>oauth</DialogTitle>
+                                <DialogDescription>
+                                    we use oauth to make sure people follow the
+                                    rules and to block anyone who doesn't.
+                                </DialogDescription>
+                            </DialogHeader>
+                            <DialogFooter >
                                 <Button
                                     size={"lg"}
                                     onClick={() =>
@@ -151,6 +162,17 @@ export default function Hero() {
                                     size={"lg"}
                                     onClick={() =>
                                         redirectToSignin(
+                                            "/auth/login/github"
+                                        )
+                                    }
+                                >
+                                    <SiGithub />
+                                    github
+                                </Button>
+                                <Button
+                                    size={"lg"}
+                                    onClick={() =>
+                                        redirectToSignin(
                                             "/auth/login/slack_oidc"
                                         )
                                     }
@@ -158,7 +180,7 @@ export default function Hero() {
                                     <SiHackclub />
                                     slack (hackclub)
                                 </Button>
-                            </div>
+                            </DialogFooter>
                         </DialogContent>
                     </Dialog>{" "}
                     to submit your drawing!
@@ -327,6 +349,7 @@ export default function Hero() {
                     <TooltipContent>lore</TooltipContent>
                 </Tooltip>
             </div>
+            <Footer />
         </>
     );
 }

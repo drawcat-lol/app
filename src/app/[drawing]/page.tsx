@@ -3,11 +3,10 @@
 import ReportButton from "@/components/report-button";
 import { Button } from "@/components/ui/button";
 import { suapbase } from "@/lib/utils";
-import { ArrowLeft, Download, Share2 } from "lucide-react";
+import { ArrowLeft, Download } from "lucide-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 
 export default function Page() {
     const [url, setUrl] = useState<string | null>();

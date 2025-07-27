@@ -10,7 +10,7 @@ export default function Page() {
     const provider = params.provider as Provider;
 
     useEffect(() => {
-        const valid: Provider[] = ["discord", "slack_oidc"];
+        const valid: Provider[] = ["discord", "slack_oidc", "github"];
         if (!valid.includes(provider)) return;
 
         suapbase.auth.signInWithOAuth({
