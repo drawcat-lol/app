@@ -7,7 +7,7 @@ import ReportButton from "./report-button";
 import { Button } from "./ui/button";
 import { ArrowLeft, Download } from "lucide-react";
 
-export default function DrawingClient({ id }: { id: string }) {
+export default function DrawingDetails({ id }: { id: string }) {
     const [data, setData] = useState<any>(null);
     const [url, setUrl] = useState<string | null>(null);
 
@@ -22,7 +22,7 @@ export default function DrawingClient({ id }: { id: string }) {
 
         suapbase
             .from("list_v2")
-            .select("*")
+            .select("*, profiles:uid(*)")
             .match({ uid: id })
             .single()
             .then(({ data, error }) => {
@@ -83,6 +83,13 @@ export default function DrawingClient({ id }: { id: string }) {
                             </Button>
                         )}
                     </div>
+                </div>
+
+                <div className="mt-2 font-medium opacity-75">
+                    by{" "}
+                    <span className="underline underline-offset-2">
+                        {data.profiles.raw_user_meta_data.name}
+                    </span>
                 </div>
             </div>
         </>

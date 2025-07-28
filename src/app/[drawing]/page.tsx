@@ -1,20 +1,16 @@
-import DrawingClient from "@/components/drawing-details";
+import DrawingDetails from "@/components/drawing-details";
 import { suapbase } from "@/lib/utils";
-import { ResolvingMetadata } from "next";
 
 interface Props {
     params: Promise<{ drawing: string }>;
 }
 
-export async function generateMetadata(
-    { params }: Props,
-    parent: ResolvingMetadata
-) {
+export async function generateMetadata({ params }: Props) {
     const uid = (await params).drawing;
 
     const { data: drawingData, error } = await suapbase
         .from("list_v2")
-        .select("*")
+        .select("*, profiles:uid(*)")
         .match({ uid: uid })
         .single();
 
@@ -31,7 +27,7 @@ export async function generateMetadata(
 
     return {
         title: drawingData.name,
-        description: `by ${drawingData.uid}`,
+        description: `by ${drawingData.profiles.raw_user_meta_data.name}`,
         openGraph: {
             images: [publicUrl],
         },
@@ -45,5 +41,5 @@ export async function generateMetadata(
 export default async function Page({ params }: Props) {
     const id = (await params).drawing;
 
-    return <DrawingClient id={id} />;
+    return <DrawingDetails id={id} />;
 }

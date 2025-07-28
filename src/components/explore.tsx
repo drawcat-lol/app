@@ -73,6 +73,12 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
         return [pageNumber - 1, pageNumber, pageNumber + 1];
     };
 
+    function copyShareLink(url: string) {
+        navigator.clipboard.writeText(url).then(() => {
+            toast.success("copied to clipboard!", { richColors: true });
+        });
+    }
+
     return (
         <div className="flex flex-col shadow-xl border overflow-hidden rounded-2xl w-full h-fit">
             <div className="p-2 border-b flex gap-2 justify-between w-full flex-col items-end sm:flex-row">
@@ -201,6 +207,11 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                                                         <Button
                                                             variant={"outline"}
                                                             size={"icon"}
+                                                            onClick={() =>
+                                                                copyShareLink(
+                                                                    `${window.location.origin}/${item.uid}`
+                                                                )
+                                                            }
                                                         >
                                                             <Share2 />
                                                         </Button>
@@ -219,12 +230,6 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                                                             readOnly
                                                             defaultValue={`${window.location.origin}/${item.uid}`}
                                                         />
-                                                        <DialogFooter>
-                                                            <Button size={"lg"}>
-                                                                <X />
-                                                                close
-                                                            </Button>
-                                                        </DialogFooter>
                                                     </DialogContent>
                                                 </Dialog>
                                             </div>
