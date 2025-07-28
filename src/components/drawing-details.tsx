@@ -13,7 +13,7 @@ export default function DrawingDetails({ id }: { id: string }) {
 
     useEffect(() => {
         const publicUrl = suapbase.storage
-            .from("drawings")
+            .from("sketches")
             .getPublicUrl(`${id}.png`, { download: true }).data.publicUrl;
 
         if (!publicUrl.endsWith("undefined.png")) {

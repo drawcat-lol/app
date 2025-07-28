@@ -11,7 +11,7 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 import { FormEvent, useEffect, useState } from "react";
-import { suapbase } from "@/lib/utils";
+import { removeHashZero, suapbase } from "@/lib/utils";
 import { toast } from "sonner";
 import { Input } from "./ui/input";
 import {
@@ -65,7 +65,7 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
     }
 
     const getDrawingUrl = (uid: string) =>
-        suapbase.storage.from("drawings").getPublicUrl(`${uid}.png`).data
+        suapbase.storage.from("sketches").getPublicUrl(`${uid}.png`).data
             .publicUrl;
 
     const getPages = (pageNumber: number) => {
@@ -148,7 +148,7 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                             >
                                 <div className="overflow-hidden relative">
                                     <Image
-                                        className="w-full aspect-square group-hover:scale-110 duration-175"
+                                        className="w-full aspect-square duration-175"
                                         src={getDrawingUrl(item.uid)}
                                         width={256}
                                         height={256}
@@ -173,20 +173,10 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                                     <div className="flex justify-between">
                                         <div className="flex flex-col gap-1 justify-end">
                                             <span className="text-xs font-semibold opacity-50">
-                                                {/* remove #0 at the end for discord users */}
-                                                {(
+                                                {removeHashZero(
                                                     item.profiles
-                                                        .raw_user_meta_data
-                                                        .name as string
-                                                ).endsWith("#0")
-                                                    ? (
-                                                          item.profiles
-                                                              .raw_user_meta_data
-                                                              .name as string
-                                                      ).slice(0, -2)
-                                                    : item.profiles
-                                                          .raw_user_meta_data
-                                                          .name}
+                                                        .raw_user_meta_data.name
+                                                )}
                                             </span>
                                             <span className="text-xs font-semibold opacity-50">
                                                 {formatDate(item.created_at)}

@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props) {
     }
 
     const publicUrl = suapbase.storage
-        .from("drawings")
+        .from("sketches")
         .getPublicUrl(`${uid}.png`).data.publicUrl;
 
     if (publicUrl.endsWith("undefined.png")) return;

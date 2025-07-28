@@ -1,14 +1,23 @@
 "use client";
 
-import { Circle, Eraser, Pen, Redo, Undo, Upload } from "lucide-react";
+import {
+    Circle,
+    Eraser,
+    Lightbulb,
+    Pen,
+    Redo,
+    Undo,
+    Upload,
+    X,
+} from "lucide-react";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import Canvas, { CanvasHandle } from "./canvas";
-import useFullscreenStore from "@/stores/fullscreen";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { HexColorPicker } from "react-colorful";
+import useStartedDrawingStore from "@/stores/started-drawing";
 
 export default function CanvasWrapper() {
     const [eraseMode, setEraseMode] = useState(false);
@@ -20,7 +29,46 @@ export default function CanvasWrapper() {
     const inputColorRef = useRef<HTMLInputElement>(null);
     const inputFileRef = useRef<HTMLInputElement>(null);
 
-    const { fullscreen, setFullscreen } = useFullscreenStore();
+    // const { fullscreen, setFullscreen } = useFullscreenStore();
+
+    const [showIdea, setShowIdea] = useState(false);
+    const { startedDrawing } = useStartedDrawingStore();
+    const [dontShowIdeaPls, setDontShowIdeaPls] = useState(false);
+
+    const ideas = [
+        "cat wearing sunglasses",
+        "space cat floating with planets",
+        "cat eating noodles",
+        "wizard cat casting spells",
+        "cat DJ at a party",
+        "pirate cat with an eyepatch",
+        "cat inside a watermelon",
+        "cat riding a skateboard",
+        "ninja cat hiding in shadows",
+        "cat and dog best friends",
+        "robot cat from the future",
+        "cat baking cookies",
+        "cat stuck in a sock",
+        "ghost cat haunting a house",
+        "cat fishing in a pond",
+        "cowboy cat in the wild west",
+        "cat playing video games",
+        "cat made of fire",
+        "cat in a giant teacup",
+        "mermaid cat underwater",
+    ];
+
+    const [idea, setIdea] = useState(
+        () => ideas[Math.floor(Math.random() * ideas.length)]
+    );
+
+    useEffect(() => {
+        if (startedDrawing || dontShowIdeaPls) {
+            setShowIdea(false);
+        } else {
+            setShowIdea(true);
+        }
+    }, [startedDrawing, dontShowIdeaPls]);
 
     // handle keyboard undo/redo
     useEffect(() => {
@@ -56,6 +104,7 @@ export default function CanvasWrapper() {
         const file = e.target.files?.[0];
         if (!file) return;
         canvasRef.current?.loadImage(file);
+        setDontShowIdeaPls(true);
     }
 
     return (
@@ -148,6 +197,26 @@ export default function CanvasWrapper() {
                     eraserSize={eraserSize}
                     strokeColor={strokeColor}
                 />
+                {showIdea && (
+                    <div className="absolute bottom-0 right-0 p-2 animate-idea">
+                        <button
+                            className="text-sm opacity-75 font-medium border-border rounded-full px-3 py-1 border bg-background flex gap-1 items-center hover:bg-accent duration-100"
+                            onClick={() =>
+                                setIdea(
+                                    ideas[
+                                        Math.floor(Math.random() * ideas.length)
+                                    ]
+                                )
+                            }
+                        >
+                            <Lightbulb size={12} />
+                            <span>{idea}</span>
+                            <div onClick={() => setDontShowIdeaPls(true)}>
+                                <X size={16} />
+                            </div>
+                        </button>
+                    </div>
+                )}
                 {/* <Button
                     variant="outline"
                     onClick={() => setFullscreen(!fullscreen)}

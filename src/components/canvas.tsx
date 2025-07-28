@@ -4,6 +4,7 @@ import useBlobStore from "@/stores/blob";
 import useShouldDownloadStore from "@/stores/should-download";
 import useShouldDraftStore from "@/stores/should-draft";
 import useShouldSubmitStore from "@/stores/should-submit";
+import useStartedDrawingStore from "@/stores/started-drawing";
 import React, {
     forwardRef,
     useEffect,
@@ -27,6 +28,7 @@ type Props = {
 
 const Canvas = forwardRef<CanvasHandle, Props>(
     ({ strokeWidth, strokeColor, eraseMode, eraserSize }, ref) => {
+        const { setStartedDrawing } = useStartedDrawingStore();
         const { shouldSubmit } = useShouldSubmitStore();
         const { setBlob } = useBlobStore();
 
@@ -125,6 +127,7 @@ const Canvas = forwardRef<CanvasHandle, Props>(
 
             function handleDown(e: MouseEvent | TouchEvent) {
                 e.preventDefault();
+                setStartedDrawing(true);
                 undoStack.current.push(
                     ctx.getImageData(0, 0, canvas.width, canvas.height)
                 );

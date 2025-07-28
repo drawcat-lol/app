@@ -37,7 +37,31 @@ export function formatDate(iso: string): string {
     }
 }
 
+// removes #0 from usernames (discord)
 export function removeHashZero(name: string) {
     const result = name.endsWith("#0") ? name.slice(0, -2) : name;
     return result;
+}
+
+// adds a white background to drawings
+export async function whiteBbg(pngBlob: Blob): Promise<Blob> {
+    const img = new Image();
+    img.src = URL.createObjectURL(pngBlob);
+
+    await new Promise<void>((resolve) => {
+        img.onload = () => resolve();
+    });
+
+    const canvas = document.createElement("canvas");
+    canvas.width = img.width;
+    canvas.height = img.height;
+
+    const ctx = canvas.getContext("2d")!;
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0);
+
+    return await new Promise<Blob>((resolve) => {
+        canvas.toBlob((blob) => resolve(blob!), "image/png");
+    });
 }

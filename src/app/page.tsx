@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import useBlobStore from "@/stores/blob";
 import useShouldSubmitStore from "@/stores/should-submit";
 import useUserStore from "@/stores/user";
-import { suapbase } from "@/lib/utils";
+import { suapbase, whiteBbg } from "@/lib/utils";
 import {
     Check,
     CircleQuestionMark,
@@ -42,8 +42,7 @@ import { cn } from "@/lib/utils";
 import ExploreWrapper from "@/components/explore-wrapper";
 import Footer from "@/components/footer";
 import useShouldReloadStore from "@/stores/should-reload";
-import { useWindowSize } from "react-use";
-import ReactConfetti from "react-confetti";
+import ConfettiExplosion from "react-confetti-explosion";
 
 export default () => {
     const { user } = useUserStore();
@@ -78,9 +77,16 @@ export default () => {
         if (!user || !blob || !shouldSubmit) return;
 
         const upload = async () => {
+            const niceBlob = await whiteBbg(blob);
+
+            if (!niceBlob) {
+                toast.error("something went wrongg!", { richColors: true });
+                return;
+            }
+
             const { error: storageUploadError } = await suapbase.storage
-                .from("drawings")
-                .upload(`${user.id}.png`, blob, {
+                .from("sketches")
+                .upload(`${user.id}.png`, niceBlob, {
                     upsert: true,
                 });
 
@@ -131,11 +137,19 @@ export default () => {
         window.location.href = href;
     }
 
-    const { width, height } = useWindowSize();
-
     return (
         <>
-            {/* <ReactConfetti /> */}
+            {shouldConfetti && (
+                <ConfettiExplosion
+                    className="fixed top-0 right-1/2"
+                    onComplete={() => setShouldConfetti(false)}
+                    zIndex={999}
+                    force={0.6}
+                    duration={2500}
+                    particleCount={80}
+                    width={1000}
+                />
+            )}
             <div
                 className={cn(
                     "fixed w-full p-4 bg-orange-50 border-b flex text-sm items-center duration-200 z-40",
@@ -215,6 +229,7 @@ export default () => {
                                 <Button
                                     size={"lg"}
                                     disabled={user ? false : true}
+                                    className="relative"
                                 >
                                     <Check />
                                     submit
@@ -244,6 +259,7 @@ export default () => {
                                     <DialogClose asChild>
                                         <Button
                                             size={"lg"}
+                                            type="submit"
                                             onClick={handleSubmit}
                                         >
                                             <Check />
