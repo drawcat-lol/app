@@ -13,7 +13,7 @@ this site lets anyone draw a cat on a 256x256 canvas and share it with the world
 just clone the repo, fill in the values in a `.env.local` file (refer to [`.env.example`](/.env.example)) and run `npm run dev`.
 
 ## misc
--   [drawcat.lol-functions](https://github.com/ronykax/drawcat.lol-functions)
+-   [functions](https://github.com/drawcat-lol/functions)
 
 ## contributing
 

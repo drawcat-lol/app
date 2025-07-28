@@ -159,15 +159,6 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                                             <Info />
                                         </Button>
                                     </div>
-
-                                    <div className="absolute p-2 bottom-0 ring-0">
-                                        <Button
-                                            variant={"outline"}
-                                            size={"icon"}
-                                        >
-                                            <Heart />
-                                        </Button>
-                                    </div>
                                 </div>
                                 <div className="p-4 flex flex-col gap-2 absolute bg-background bottom-0 translate-y-full group-hover:translate-y-0 duration-175 w-full border-t">
                                     <span className="text-sm font-semibold">
@@ -195,39 +186,48 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                                                 {formatDate(item.created_at)}
                                             </span>
                                         </div>
-                                        <div className="flex gap-2">
-                                            <ReportButton item={item} />
-                                            <Dialog>
-                                                <DialogTrigger asChild>
-                                                    <Button
-                                                        variant={"outline"}
-                                                        size={"icon"}
-                                                    >
-                                                        <Share2 />
-                                                    </Button>
-                                                </DialogTrigger>
-                                                <DialogContent>
-                                                    <DialogHeader>
-                                                        <DialogTitle>
-                                                            share drawing
-                                                        </DialogTitle>
-                                                        <DialogDescription>
-                                                            here's a link to
-                                                            this drawing!
-                                                        </DialogDescription>
-                                                    </DialogHeader>
-                                                    <Input
-                                                        readOnly
-                                                        defaultValue={`${window.location.origin}/${item.uid}`}
-                                                    />
-                                                    <DialogFooter>
-                                                        <Button size={"lg"}>
-                                                            <X />
-                                                            close
+                                        <div className="flex flex-col gap-2">
+                                            {/* <Button
+                                                variant={"outline"}
+                                                size={"sm"}
+                                            >
+                                                <Heart />
+                                                200
+                                            </Button> */}
+                                            <div className="flex gap-2">
+                                                <ReportButton item={item} />
+                                                <Dialog>
+                                                    <DialogTrigger asChild>
+                                                        <Button
+                                                            variant={"outline"}
+                                                            size={"icon"}
+                                                        >
+                                                            <Share2 />
                                                         </Button>
-                                                    </DialogFooter>
-                                                </DialogContent>
-                                            </Dialog>
+                                                    </DialogTrigger>
+                                                    <DialogContent>
+                                                        <DialogHeader>
+                                                            <DialogTitle>
+                                                                share drawing
+                                                            </DialogTitle>
+                                                            <DialogDescription>
+                                                                here's a link to
+                                                                this drawing!
+                                                            </DialogDescription>
+                                                        </DialogHeader>
+                                                        <Input
+                                                            readOnly
+                                                            defaultValue={`${window.location.origin}/${item.uid}`}
+                                                        />
+                                                        <DialogFooter>
+                                                            <Button size={"lg"}>
+                                                                <X />
+                                                                close
+                                                            </Button>
+                                                        </DialogFooter>
+                                                    </DialogContent>
+                                                </Dialog>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

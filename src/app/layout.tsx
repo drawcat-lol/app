@@ -17,7 +17,7 @@ const interTight = Inter_Tight({
 
 export const metadata: Metadata = {
     title: "drawcat",
-    description: "collection of poorly drawn cats",
+    description: "a collection of poorly drawn cats.",
 };
 
 export default function RootLayout({

@@ -1,101 +1,42 @@
-"use client";
-
-import ReportButton from "@/components/report-button";
-import { Button } from "@/components/ui/button";
+import DrawingClient from "@/components/drawing-details";
 import { suapbase } from "@/lib/utils";
-import { ArrowLeft, Download } from "lucide-react";
-import Image from "next/image";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { ResolvingMetadata } from "next";
 
-export default function Page() {
-    const [url, setUrl] = useState<string | null>();
-    const [data, setData] = useState<any>(null);
+interface Props {
+    params: Promise<{ drawing: string }>;
+}
 
-    const params = useParams();
-    const uid = params.drawing;
+export async function generateMetadata(
+    { params }: Props,
+    parent: ResolvingMetadata
+) {
+    const uid = (await params).drawing;
 
-    useEffect(() => {
-        const publicUrl = suapbase.storage
-            .from("drawings")
-            .getPublicUrl(`${uid}.png`, { download: true }).data.publicUrl;
+    const { data: drawingData, error } = await suapbase
+        .from("list_v2")
+        .select("*")
+        .match({ uid: uid })
+        .single();
 
-        if (!publicUrl.endsWith("undefined.png")) {
-            setUrl(publicUrl);
-        }
-
-        const fetch = async () => {
-            const { data, error } = await suapbase
-                .from("list_v2")
-                .select("*")
-                .match({ uid: uid })
-                .single();
-
-            if (!error) {
-                setData(data);
-            }
-        };
-
-        fetch();
-    }, []);
-
-    function downloadDrawing(url: string) {
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+    if (error) {
+        console.error(error);
+        return;
     }
 
-    return data !== null ? (
-        <>
-            <div className="fixed top-0 left-0 p-4">
-                <Button
-                    variant={"outline"}
-                    onClick={() => (window.location.href = "/")}
-                >
-                    <ArrowLeft />
-                    home
-                </Button>
-            </div>
-            <div className="max-w-lg mx-auto py-20 px-4 md:px-6">
-                <div className="rounded-2xl border overflow-hidden shadow-xl flex flex-col">
-                    {url && (
-                        <Image
-                            src={url}
-                            width={256}
-                            height={256}
-                            alt="cat drawing"
-                            className="w-full h-full pointer-events-none"
-                            draggable={false}
-                        />
-                    )}
-                </div>
+    const publicUrl = suapbase.storage
+        .from("drawings")
+        .getPublicUrl(`${uid}.png`).data.publicUrl;
 
-                <div className="mt-8 flex justify-between">
-                    <span className="text-3xl font-display font-bold">
-                        {data.name}
-                    </span>
+    if (publicUrl.endsWith("undefined.png")) return;
 
-                    <div className="flex gap-2">
-                        <ReportButton item={data} />
-                        {url && (
-                            <Button
-                                size={"icon"}
-                                variant={"outline"}
-                                onClick={() => downloadDrawing(url)}
-                            >
-                                <Download />
-                            </Button>
-                        )}
-                    </div>
-                </div>
-            </div>
-        </>
-    ) : (
-        <div className="flex justify-center items-center h-screen">
-            <span>loading...</span>
-        </div>
-    );
+    return {
+        title: drawingData.name,
+        description: `artist: ${drawingData.uid}`,
+    };
+}
+
+export default async function Page({ params }: Props) {
+    const id = (await params).drawing;
+
+    return <DrawingClient id={id} />;
 }

@@ -1,7 +1,6 @@
 "use client";
 
 import CanvasWrapper from "@/components/canvas-wrapper";
-import Explore from "@/components/explore";
 import { Button } from "@/components/ui/button";
 import useBlobStore from "@/stores/blob";
 import useShouldSubmitStore from "@/stores/should-submit";
@@ -41,11 +40,12 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import ExploreWrapper from "@/components/explore-wrapper";
-import useShouldDraftStore from "@/stores/should-draft";
 import Footer from "@/components/footer";
 import useShouldReloadStore from "@/stores/should-reload";
+import { useWindowSize } from "react-use";
+import ReactConfetti from "react-confetti";
 
-export default function Hero() {
+export default () => {
     const { user } = useUserStore();
 
     const { shouldSubmit, setShouldSubmit } = useShouldSubmitStore();
@@ -56,9 +56,10 @@ export default function Hero() {
     const [submitForm, setSubmitForm] = useState({ name: "" });
     const [signupbro, setSignupbro] = useState(false);
 
+    const [shouldConfetti, setShouldConfetti] = useState(false);
+
     function handleSubmit() {
         setShouldSubmit(true);
-        setShouldReload(true);
     }
 
     function handleDownload() {
@@ -100,11 +101,15 @@ export default function Hero() {
                 console.log("error upserting: ", dataUploadError);
             } else {
                 toast.success("nice!", { richColors: true });
-                setShouldDownload(true);
+
+                // setShouldDownload(true);
+                setShouldReload(true);
+                setShouldConfetti(true);
             }
         };
 
         upload();
+
         setShouldSubmit(false);
     }, [blob, user, shouldSubmit]);
 
@@ -126,8 +131,11 @@ export default function Hero() {
         window.location.href = href;
     }
 
+    const { width, height } = useWindowSize();
+
     return (
         <>
+            {/* <ReactConfetti /> */}
             <div
                 className={cn(
                     "fixed w-full p-4 bg-orange-50 border-b flex text-sm items-center duration-200 z-40",
@@ -148,7 +156,7 @@ export default function Hero() {
                                     rules and to block anyone who doesn't.
                                 </DialogDescription>
                             </DialogHeader>
-                            <DialogFooter >
+                            <DialogFooter>
                                 <Button
                                     size={"lg"}
                                     onClick={() =>
@@ -161,9 +169,7 @@ export default function Hero() {
                                 <Button
                                     size={"lg"}
                                     onClick={() =>
-                                        redirectToSignin(
-                                            "/auth/login/github"
-                                        )
+                                        redirectToSignin("/auth/login/github")
                                     }
                                 >
                                     <SiGithub />
@@ -308,7 +314,7 @@ export default function Hero() {
                                     please open an issue in our github
                                     repository{" "}
                                     <a
-                                        href="https://github.com/ronykax/drawcat.lol"
+                                        href="https://github.com/drawcat-lol/app"
                                         className="underline underline-offset-2"
                                     >
                                         here
@@ -318,7 +324,7 @@ export default function Hero() {
                             </DialogHeader>
                             <DialogFooter>
                                 <a
-                                    href="https://github.com/ronykax"
+                                    href="https://github.com/drawcat-lol/app"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
@@ -352,4 +358,4 @@ export default function Hero() {
             <Footer />
         </>
     );
-}
+};
