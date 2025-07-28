@@ -1,5 +1,5 @@
 import DrawingDetails from "@/components/drawing-details";
-import { suapbase } from "@/lib/utils";
+import { removeHashZero, suapbase } from "@/lib/utils";
 
 interface Props {
     params: Promise<{ drawing: string }>;
@@ -27,7 +27,9 @@ export async function generateMetadata({ params }: Props) {
 
     return {
         title: drawingData.name,
-        description: `by ${drawingData.profiles.raw_user_meta_data.name}`,
+        description: `by ${removeHashZero(
+            drawingData.profiles.raw_user_meta_data.name as string
+        )}`,
         openGraph: {
             images: [publicUrl],
         },

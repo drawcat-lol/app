@@ -36,3 +36,8 @@ export function formatDate(iso: string): string {
         });
     }
 }
+
+export function removeHashZero(name: string) {
+    const result = name.endsWith("#0") ? name.slice(0, -2) : name;
+    return result;
+}
