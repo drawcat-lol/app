@@ -31,7 +31,14 @@ export async function generateMetadata(
 
     return {
         title: drawingData.name,
-        description: `artist: ${drawingData.uid}`,
+        description: `by ${drawingData.uid}`,
+        openGraph: {
+            images: [publicUrl],
+        },
+        twitter: {
+            images: [publicUrl],
+            card: "summary_large_image",
+        },
     };
 }
 
