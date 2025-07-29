@@ -6,13 +6,16 @@ this site lets anyone draw a cat on a 256x256 canvas and share it with the world
 
 -   nextjs
 -   shadcn
+-   tailwindcss
 -   supabase
+-   zustand
 
 ## getting started
 
 just clone the repo, fill in the values in a `.env.local` file (refer to [`.env.example`](/.env.example)) and run `npm run dev`.
 
 ## misc
+
 -   [functions](https://github.com/drawcat-lol/functions)
 
 ## contributing

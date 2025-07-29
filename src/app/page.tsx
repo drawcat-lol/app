@@ -183,7 +183,7 @@ export default () => {
                                         </AlertDialogTitle>
                                         <AlertDialogDescription>
                                             your masterpiece of a drawing will
-                                            never be back again!
+                                            never come back!
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
