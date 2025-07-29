@@ -37,9 +37,14 @@ export default function RootLayout({
                 className={`${inter.className} ${interTight.variable} antialiased`}
             >
                 <UserProvider>
-                    <ThemeProvider defaultTheme="light">
+                    <ThemeProvider
+                        defaultTheme="light"
+                        attribute={"class"}
+                        enableSystem
+                        disableTransitionOnChange
+                    >
                         <main>{children}</main>
-                        <Toaster position="top-center" theme="light" />
+                        <Toaster position="top-center" theme="system" />
                     </ThemeProvider>
                 </UserProvider>
             </body>

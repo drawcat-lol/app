@@ -265,6 +265,16 @@ export default function CanvasWrapper() {
                     eraserSize={eraserSize}
                     strokeColor={strokeColor}
                 />
+
+                {/* <div className="absolute inset-0 pointer-events-none">
+                    <div className="relative size-full">
+                        <div className="absolute top-1/3 left-0 w-full h-px bg-black/20"></div>
+                        <div className="absolute top-2/3 left-0 w-full h-px bg-black/20"></div>
+                        <div className="absolute left-1/3 top-0 h-full w-px bg-black/20"></div>
+                        <div className="absolute left-2/3 top-0 h-full w-px bg-black/20"></div>
+                    </div>
+                </div> */}
+
                 {showIdea && (
                     <div className="absolute bottom-0 right-0 p-2 animate-idea">
                         <button

@@ -26,6 +26,7 @@ import {
 import { formatDate } from "@/lib/utils";
 import ReportButton from "./report-button";
 import useReloadExploreStore from "@/stores/reload";
+import Link from "next/link";
 
 export default function Explore({ pageNumber }: { pageNumber: number }) {
     const [listItems, setListItems] = useState<any[]>([]);
@@ -122,10 +123,10 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                                 </PaginationItem>
                             ))}
 
-                            {totalItemsCount &&
-                            totalItemsCount > perPageLimit * 3 ? (
+                            {/* {totalItemsCount &&
+                            totalItemsCount > perPageLimit * 36 ? (
                                 <PaginationEllipsis />
-                            ) : null}
+                            ) : null} */}
 
                             <PaginationItem>
                                 <PaginationNext
@@ -144,7 +145,7 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                         </span>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-[1px] bg-border">
+                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-px bg-border">
                         {listItems.map((item, index) => (
                             <div
                                 className="w-full flex flex-col text-start overflow-hidden group bg-background relative"
