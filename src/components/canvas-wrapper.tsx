@@ -18,22 +18,31 @@ import Canvas, { CanvasHandle } from "./canvas";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { HexColorPicker } from "react-colorful";
 import useStartedDrawingStore from "@/stores/started-drawing";
+import useShouldDownloadStore from "@/stores/should-download";
+import { toast } from "sonner";
+import { downloadBlob, suapbase, uploadToBucket, whiteBbg } from "@/lib/utils";
+import useShouldSubmitStore from "@/stores/should-submit";
+import useUserStore from "@/stores/user";
+import useInputStore from "@/stores/inputs";
+import useConfettiStore from "@/stores/should-confetti";
+import useReloadExploreStore from "@/stores/reload";
 
 export default function CanvasWrapper() {
+    const { user } = useUserStore();
+
     const [eraseMode, setEraseMode] = useState(false);
     const [strokeWidth, setStrokeWidth] = useState(4);
     const [eraserSize, setEraserSize] = useState(12);
     const [strokeColor, setStrokeColor] = useState("#000000");
 
     const canvasRef = useRef<CanvasHandle>(null);
-    const inputColorRef = useRef<HTMLInputElement>(null);
     const inputFileRef = useRef<HTMLInputElement>(null);
-
-    // const { fullscreen, setFullscreen } = useFullscreenStore();
 
     const [showIdea, setShowIdea] = useState(false);
     const { startedDrawing } = useStartedDrawingStore();
     const [dontShowIdeaPls, setDontShowIdeaPls] = useState(false);
+
+    const { inputs, resetInputs } = useInputStore();
 
     const ideas = [
         "cat wearing sunglasses",
@@ -103,9 +112,72 @@ export default function CanvasWrapper() {
     function handleUpload(e: ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0];
         if (!file) return;
+
         canvasRef.current?.loadImage(file);
-        setDontShowIdeaPls(true);
+        setDontShowIdeaPls(true); // dont show the idea prompter if a drawing has been uploaded
     }
+
+    const { shouldDownload, setShouldDownload } = useShouldDownloadStore();
+    useEffect(() => {
+        if (!shouldDownload) return;
+        if (!canvasRef.current) return;
+
+        canvasRef.current
+            .exportBlob()
+            .then((blob) => {
+                downloadBlob(blob, "cat_drawing.png");
+            })
+            .catch(() => {
+                toast.error("couldn't download!", { richColors: true });
+            });
+
+        setShouldDownload(false); // should not download after downloading
+    }, [shouldDownload]);
+
+    const { setShouldConfetti } = useConfettiStore();
+    const { setShouldReloadExplore } = useReloadExploreStore();
+    const { shouldSubmit, setShouldSubmit } = useShouldSubmitStore();
+    useEffect(() => {
+        if (!user) return;
+        if (!shouldSubmit) return;
+
+        const upload = async () => {
+            const exportedBlob = await canvasRef.current?.exportBlob();
+            if (!exportedBlob) return;
+
+            const blob = await whiteBbg(exportedBlob);
+
+            const { error: fileUploadError } = await uploadToBucket(
+                blob,
+                `${user.id}.png`,
+                "sketches"
+            );
+
+            const { error: dataUploadError } = await suapbase
+                .from("list_v2")
+                .upsert(
+                    {
+                        uid: user.id,
+                        name: inputs["drawing_name"] || "untitled cat",
+                    },
+                    { onConflict: "uid" }
+                );
+
+            if (fileUploadError || dataUploadError) {
+                toast.error("something went wrong!", { richColors: true });
+            } else {
+                toast.success("nice!", { richColors: true });
+
+                setShouldConfetti(true);
+                setShouldReloadExplore(true);
+            }
+        };
+
+        upload();
+
+        setShouldSubmit(false); // should not submit after submitting
+        resetInputs();
+    }, [shouldSubmit]);
 
     return (
         <div className="flex flex-col border shadow-xl w-fit rounded-2xl overflow-hidden">
@@ -146,11 +218,7 @@ export default function CanvasWrapper() {
                 </div>
                 <Popover>
                     <PopoverTrigger asChild>
-                        <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={() => inputColorRef.current?.click()}
-                        >
+                        <Button variant="outline" size="icon">
                             <Circle fill={strokeColor} />
                         </Button>
                     </PopoverTrigger>
@@ -217,14 +285,6 @@ export default function CanvasWrapper() {
                         </button>
                     </div>
                 )}
-                {/* <Button
-                    variant="outline"
-                    onClick={() => setFullscreen(!fullscreen)}
-                    size={"icon"}
-                    className="absolute bottom-2 right-2"
-                >
-                    <Maximize />
-                </Button> */}
             </div>
         </div>
     );

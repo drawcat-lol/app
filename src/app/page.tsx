@@ -2,7 +2,6 @@
 
 import CanvasWrapper from "@/components/canvas-wrapper";
 import { Button } from "@/components/ui/button";
-import useBlobStore from "@/stores/blob";
 import useShouldSubmitStore from "@/stores/should-submit";
 import useUserStore from "@/stores/user";
 import { suapbase, whiteBbg } from "@/lib/utils";
@@ -20,7 +19,6 @@ import {
     SiHackclub,
 } from "@icons-pack/react-simple-icons";
 import { Suspense, useEffect, useState } from "react";
-import { toast } from "sonner";
 import {
     Dialog,
     DialogClose,
@@ -41,26 +39,24 @@ import {
 import { cn } from "@/lib/utils";
 import ExploreWrapper from "@/components/explore-wrapper";
 import Footer from "@/components/footer";
-import useShouldReloadStore from "@/stores/should-reload";
 import ConfettiExplosion from "react-confetti-explosion";
+import useSubmitFormStore from "@/stores/inputs";
+import useConfettiStore from "@/stores/should-confetti";
 
 export default () => {
     const { user } = useUserStore();
 
-    const { shouldSubmit, setShouldSubmit } = useShouldSubmitStore();
-    const { shouldDownload, setShouldDownload } = useShouldDownloadStore();
-    const { blob } = useBlobStore();
-    const { setShouldReload } = useShouldReloadStore();
-
-    const [submitForm, setSubmitForm] = useState({ name: "" });
+    // const [submitForm, setSubmitForm] = useState({ name: "" });
+    const { setInput } = useSubmitFormStore();
     const [signupbro, setSignupbro] = useState(false);
+    const { shouldConfetti, setShouldConfetti } = useConfettiStore();
 
-    const [shouldConfetti, setShouldConfetti] = useState(false);
-
+    const { setShouldSubmit } = useShouldSubmitStore();
     function handleSubmit() {
         setShouldSubmit(true);
     }
 
+    const { setShouldDownload } = useShouldDownloadStore();
     function handleDownload() {
         setShouldDownload(true);
     }
@@ -72,65 +68,6 @@ export default () => {
 
         return () => clearTimeout(timeout); // cleanup on user change
     }, [user]);
-
-    useEffect(() => {
-        if (!user || !blob || !shouldSubmit) return;
-
-        const upload = async () => {
-            const niceBlob = await whiteBbg(blob);
-
-            if (!niceBlob) {
-                toast.error("something went wrongg!", { richColors: true });
-                return;
-            }
-
-            const { error: storageUploadError } = await suapbase.storage
-                .from("sketches")
-                .upload(`${user.id}.png`, niceBlob, {
-                    upsert: true,
-                });
-
-            const { error: dataUploadError } = await suapbase
-                .from("list_v2")
-                .upsert(
-                    {
-                        uid: user.id,
-                        name: submitForm.name,
-                    },
-                    { onConflict: "uid" }
-                );
-
-            if (storageUploadError || dataUploadError) {
-                toast.error("something went wrong!", {
-                    richColors: true,
-                });
-                console.log("error upserting: ", dataUploadError);
-            } else {
-                toast.success("nice!", { richColors: true });
-
-                // setShouldDownload(true);
-                setShouldReload(true);
-                setShouldConfetti(true);
-            }
-        };
-
-        upload();
-
-        setShouldSubmit(false);
-    }, [blob, user, shouldSubmit]);
-
-    useEffect(() => {
-        if (shouldDownload && blob) {
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-
-            a.href = url;
-            a.download = "cat_drawing.png";
-            a.click();
-
-            URL.revokeObjectURL(url);
-        }
-    }, [shouldDownload, blob]);
 
     function redirectToSignin(href: string) {
         setShouldDownload(true);
@@ -248,9 +185,7 @@ export default () => {
                                 <Input
                                     placeholder="black cat"
                                     onChange={(e) =>
-                                        setSubmitForm({
-                                            name: e.target.value,
-                                        })
+                                        setInput("drawing_name", e.target.value)
                                     }
                                     autoFocus
                                     required

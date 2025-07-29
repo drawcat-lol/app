@@ -65,3 +65,30 @@ export async function whiteBbg(pngBlob: Blob): Promise<Blob> {
         canvas.toBlob((blob) => resolve(blob!), "image/png");
     });
 }
+
+export function downloadBlob(blob: Blob, filename: string) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+
+    a.href = url;
+    a.download = filename;
+
+    document.body.appendChild(a);
+
+    a.click();
+    a.remove();
+
+    URL.revokeObjectURL(url);
+}
+
+export async function uploadToBucket(
+    blob: Blob,
+    filename: string,
+    bucket: string
+) {
+    const { data, error } = await suapbase.storage
+        .from(bucket)
+        .upload(filename, blob, { upsert: true });
+
+    return { data, error };
+}

@@ -25,7 +25,7 @@ import {
 } from "./ui/dialog";
 import { formatDate } from "@/lib/utils";
 import ReportButton from "./report-button";
-import useShouldReloadStore from "@/stores/should-reload";
+import useReloadExploreStore from "@/stores/reload";
 
 export default function Explore({ pageNumber }: { pageNumber: number }) {
     const [listItems, setListItems] = useState<any[]>([]);
@@ -36,8 +36,8 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
     const [perPageLimit, setPerPageLimit] = useState(12);
     const [totalItemsCount, setTotalItemsCount] = useState<number | null>(null);
 
-    const { shouldReload } = useShouldReloadStore();
-
+    const { shouldReloadExplore, setShouldReloadExplore } =
+        useReloadExploreStore();
     useEffect(() => {
         const yes = async () => {
             const { data, count, error } = await suapbase
@@ -49,15 +49,19 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                     (pageNumber - 1) * perPageLimit,
                     pageNumber * perPageLimit - 1
                 );
+
             if (!error) {
                 setListItems(data);
                 setTotalItemsCount(count);
             } else {
                 toast.error("couldn't fetch drawings!", { richColors: true });
             }
+
+            setShouldReloadExplore(false);
         };
+
         yes();
-    }, [finalSearchTerm, pageNumber, shouldReload]);
+    }, [finalSearchTerm, pageNumber, shouldReloadExplore]);
 
     async function handleSubmit(e: FormEvent) {
         e.preventDefault();

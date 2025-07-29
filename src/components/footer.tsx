@@ -51,7 +51,7 @@ export default function Footer() {
                 </span>
 
                 <button
-                    className="cursor-pointer font-semibold"
+                    className="cursor-pointer"
                     onClick={() => setFact(getRandomFact())}
                 >
                     {fact}

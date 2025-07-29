@@ -1,22 +1,17 @@
 "use client";
 
-import useBlobStore from "@/stores/blob";
-import useShouldDownloadStore from "@/stores/should-download";
-import useShouldDraftStore from "@/stores/should-draft";
-import useShouldSubmitStore from "@/stores/should-submit";
-import useStartedDrawingStore from "@/stores/started-drawing";
 import React, {
     forwardRef,
     useEffect,
     useRef,
     useImperativeHandle,
-    useState,
 } from "react";
 
 export type CanvasHandle = {
     undo: () => void;
     redo: () => void;
     loadImage: (file: File) => void;
+    exportBlob: () => Promise<Blob>;
 };
 
 type Props = {
@@ -28,19 +23,15 @@ type Props = {
 
 const Canvas = forwardRef<CanvasHandle, Props>(
     ({ strokeWidth, strokeColor, eraseMode, eraserSize }, ref) => {
-        const { setStartedDrawing } = useStartedDrawingStore();
-        const { shouldSubmit } = useShouldSubmitStore();
-        const { setBlob } = useBlobStore();
-
         const canvasRef = useRef<HTMLCanvasElement>(null);
-        const [drawing, setDrawing] = useState(false);
         const undoStack = useRef<ImageData[]>([]);
         const redoStack = useRef<ImageData[]>([]);
+        const drawingRef = useRef(false);
 
         useImperativeHandle(ref, () => ({
             undo() {
-                const canvas = canvasRef.current;
-                if (!canvas || undoStack.current.length === 0) return;
+                const canvas = canvasRef.current!;
+                if (!undoStack.current.length) return;
                 const ctx = canvas.getContext("2d", {
                     willReadFrequently: true,
                 })!;
@@ -50,9 +41,10 @@ const Canvas = forwardRef<CanvasHandle, Props>(
                 );
                 ctx.putImageData(last, 0, 0);
             },
+
             redo() {
-                const canvas = canvasRef.current;
-                if (!canvas || redoStack.current.length === 0) return;
+                const canvas = canvasRef.current!;
+                if (!redoStack.current.length) return;
                 const ctx = canvas.getContext("2d", {
                     willReadFrequently: true,
                 })!;
@@ -62,18 +54,18 @@ const Canvas = forwardRef<CanvasHandle, Props>(
                 );
                 ctx.putImageData(next, 0, 0);
             },
+
             loadImage(file: File) {
-                const canvas = canvasRef.current;
-                if (!canvas) return;
+                const canvas = canvasRef.current!;
                 const ctx = canvas.getContext("2d", {
                     willReadFrequently: true,
                 })!;
                 const img = new Image();
                 const reader = new FileReader();
+
                 reader.onload = () => {
                     img.src = reader.result as string;
                     img.onload = () => {
-                        // save current state
                         undoStack.current.push(
                             ctx.getImageData(0, 0, canvas.width, canvas.height)
                         );
@@ -82,14 +74,23 @@ const Canvas = forwardRef<CanvasHandle, Props>(
                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     };
                 };
+
                 reader.readAsDataURL(file);
+            },
+
+            exportBlob(): Promise<Blob> {
+                const canvas = canvasRef.current!;
+                return new Promise((resolve, reject) => {
+                    canvas.toBlob((blob) => {
+                        if (blob) resolve(blob);
+                        else reject(new Error("failed to get PNG"));
+                    }, "image/png");
+                });
             },
         }));
 
-        // update drawing settings
         useEffect(() => {
-            const canvas = canvasRef.current;
-            if (!canvas) return;
+            const canvas = canvasRef.current!;
             const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
             ctx.lineWidth = eraseMode ? eraserSize : strokeWidth;
             ctx.strokeStyle = strokeColor;
@@ -100,62 +101,51 @@ const Canvas = forwardRef<CanvasHandle, Props>(
                 : "source-over";
         }, [strokeWidth, strokeColor, eraseMode, eraserSize]);
 
-        // drawing handlers
         useEffect(() => {
             const canvas = canvasRef.current!;
             const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
-            const scaleX = canvas.width / canvas.offsetWidth;
-            const scaleY = canvas.height / canvas.offsetHeight;
+            const scaleX = () => canvas.width / canvas.offsetWidth;
+            const scaleY = () => canvas.height / canvas.offsetHeight;
 
-            function getMousePos(e: MouseEvent | TouchEvent) {
+            function getPos(e: MouseEvent | TouchEvent) {
                 const rect = canvas.getBoundingClientRect();
-                let clientX, clientY;
-
-                if (e instanceof MouseEvent) {
-                    clientX = e.clientX;
-                    clientY = e.clientY;
-                } else {
-                    clientX = e.touches[0].clientX;
-                    clientY = e.touches[0].clientY;
-                }
-
+                const clientX =
+                    "touches" in e ? e.touches[0].clientX : e.clientX;
+                const clientY =
+                    "touches" in e ? e.touches[0].clientY : e.clientY;
                 return {
-                    x: (clientX - rect.left) * scaleX,
-                    y: (clientY - rect.top) * scaleY,
+                    x: (clientX - rect.left) * scaleX(),
+                    y: (clientY - rect.top) * scaleY(),
                 };
             }
 
             function handleDown(e: MouseEvent | TouchEvent) {
                 e.preventDefault();
-                setStartedDrawing(true);
                 undoStack.current.push(
                     ctx.getImageData(0, 0, canvas.width, canvas.height)
                 );
                 redoStack.current = [];
-
-                const pos = getMousePos(e);
+                const { x, y } = getPos(e);
                 ctx.beginPath();
-                ctx.moveTo(pos.x, pos.y);
-                setDrawing(true);
+                ctx.moveTo(x, y);
+                drawingRef.current = true;
             }
 
             function handleMove(e: MouseEvent | TouchEvent) {
-                if (!drawing) return;
+                if (!drawingRef.current) return;
                 e.preventDefault();
-                const pos = getMousePos(e);
-                ctx.lineTo(pos.x, pos.y);
+                const { x, y } = getPos(e);
+                ctx.lineTo(x, y);
                 ctx.stroke();
             }
 
             function handleUp() {
-                if (!drawing) return;
-                setDrawing(false);
+                drawingRef.current = false;
             }
 
             canvas.addEventListener("mousedown", handleDown);
             canvas.addEventListener("mousemove", handleMove);
             window.addEventListener("mouseup", handleUp);
-
             canvas.addEventListener("touchstart", handleDown, {
                 passive: false,
             });
@@ -168,20 +158,11 @@ const Canvas = forwardRef<CanvasHandle, Props>(
                 canvas.removeEventListener("mousedown", handleDown);
                 canvas.removeEventListener("mousemove", handleMove);
                 window.removeEventListener("mouseup", handleUp);
-
                 canvas.removeEventListener("touchstart", handleDown);
                 canvas.removeEventListener("touchmove", handleMove);
                 window.removeEventListener("touchend", handleUp);
             };
-        }, [drawing]);
-
-        // submit canvas blob
-        useEffect(() => {
-            if (shouldSubmit) {
-                const canvas = canvasRef.current!;
-                canvas.toBlob((blob) => setBlob(blob));
-            }
-        }, [shouldSubmit]);
+        }, []);
 
         return (
             <canvas
