@@ -113,7 +113,7 @@ export default () => {
         const { error, count } = await suapbase
             .from("list_v2")
             .delete({ count: "exact" })
-            .eq("uid", "4ff7fa03-cadf-426b-ba98-2bb9efbafb57");
+            .eq("uid", user.id);
 
         if (error) {
             toast.error("couldn't delete your drawing!", { richColors: true });
