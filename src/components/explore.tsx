@@ -27,6 +27,8 @@ import { formatDate } from "@/lib/utils";
 import ReportButton from "./report-button";
 import useReloadExploreStore from "@/stores/reload";
 import Link from "next/link";
+import { Badge } from "./ui/badge";
+import useUserStore from "@/stores/user";
 
 export default function Explore({ pageNumber }: { pageNumber: number }) {
     const [listItems, setListItems] = useState<any[]>([]);
@@ -37,6 +39,7 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
     const [perPageLimit, setPerPageLimit] = useState(12);
     const [totalItemsCount, setTotalItemsCount] = useState<number | null>(null);
 
+    const [likeCounts, setLikeCounts] = useState<Record<number, number>>({});
     const { shouldReloadExplore, setShouldReloadExplore } =
         useReloadExploreStore();
     useEffect(() => {
@@ -82,6 +85,21 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
         navigator.clipboard.writeText(url).then(() => {
             toast.success("copied to clipboard!", { richColors: true });
         });
+    }
+
+    const { user } = useUserStore();
+    async function handleLike(itemId: string, to: string) {
+        if (!user) return;
+
+        const { error } = await suapbase.from("likes").insert({
+            id: itemId,
+            from: user.id,
+            to: to,
+        });
+
+        if (error) {
+            console.error("Error liking:", error);
+        }
     }
 
     return (
@@ -153,7 +171,7 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                             >
                                 <div className="overflow-hidden relative">
                                     <Image
-                                        className="w-full aspect-square duration-175"
+                                        className="w-full aspect-square duration-175 group-hover:scale-110"
                                         src={getDrawingUrl(item.uid)}
                                         width={256}
                                         height={256}
@@ -171,7 +189,33 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                                         </Button>
                                     </div>
                                 </div>
-                                <div className="p-4 flex flex-col gap-2 absolute bg-background bottom-0 translate-y-full group-hover:translate-y-0 duration-175 w-full border-t">
+                                <div className="absolute p-2 bottom-0 right-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-175 bg-gradient-to-b from-black/0 to-black/100 w-full h-3/4">
+                                    <div className="size-full flex justify-between items-end gap-2">
+                                        <div className="flex flex-col gap-px text-white">
+                                            <span className="font-medium text-sm">
+                                                {item.name}
+                                            </span>
+                                            <span className="text-xs opacity-75">
+                                                {removeHashZero(
+                                                    item.profiles
+                                                        .raw_user_meta_data.name
+                                                )}
+                                            </span>
+                                        </div>
+                                        {/* <Badge
+                                            asChild
+                                            onClick={() =>
+                                                handleLike(item.id, item.uid)
+                                            }
+                                        >
+                                            <button className="cursor-pointer">
+                                                <Heart className="hover:fill-black" />
+                                                0
+                                            </button>
+                                        </Badge> */}
+                                    </div>
+                                </div>
+                                {/* <div className="p-4 flex flex-col gap-2 absolute bg-background bottom-0 translate-y-full group-hover:translate-y-0 duration-175 w-full border-t">
                                     <span className="text-sm font-semibold">
                                         {item.name}
                                     </span>
@@ -188,13 +232,6 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                                             </span>
                                         </div>
                                         <div className="flex flex-col gap-2">
-                                            {/* <Button
-                                                variant={"outline"}
-                                                size={"sm"}
-                                            >
-                                                <Heart />
-                                                200
-                                            </Button> */}
                                             <div className="flex gap-2">
                                                 <ReportButton item={item} />
                                                 <Dialog>
@@ -230,7 +267,7 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                         ))}
                     </div>
