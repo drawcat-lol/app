@@ -1,6 +1,15 @@
 import Image from "next/image";
 import { Button } from "./ui/button";
-import { Heart, Info, Search, Share2, X } from "lucide-react";
+import {
+    Heart,
+    Info,
+    Link2,
+    LinkIcon,
+    Search,
+    Share2,
+    SquareArrowOutUpRight,
+    X,
+} from "lucide-react";
 import {
     Pagination,
     PaginationContent,
@@ -213,6 +222,40 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                                                 0
                                             </button>
                                         </Badge> */}
+
+                                        <Dialog>
+                                            <DialogTrigger asChild>
+                                                <Badge
+                                                    asChild
+                                                    className="cursor-pointer"
+                                                    onClick={() =>
+                                                        copyShareLink(
+                                                            `${window.location.origin}/${item.uid}`
+                                                        )
+                                                    }
+                                                >
+                                                    <button>
+                                                        <SquareArrowOutUpRight className="hover:fill-black" />
+                                                        share
+                                                    </button>
+                                                </Badge>
+                                            </DialogTrigger>
+                                            <DialogContent>
+                                                <DialogHeader>
+                                                    <DialogTitle>
+                                                        share drawing
+                                                    </DialogTitle>
+                                                    <DialogDescription>
+                                                        here's a link to this
+                                                        drawing!
+                                                    </DialogDescription>
+                                                </DialogHeader>
+                                                <Input
+                                                    readOnly
+                                                    defaultValue={`${window.location.origin}/${item.uid}`}
+                                                />
+                                            </DialogContent>
+                                        </Dialog>
                                     </div>
                                 </div>
                                 {/* <div className="p-4 flex flex-col gap-2 absolute bg-background bottom-0 translate-y-full group-hover:translate-y-0 duration-175 w-full border-t">
