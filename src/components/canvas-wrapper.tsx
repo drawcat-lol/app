@@ -33,7 +33,34 @@ export default function CanvasWrapper() {
     const [eraseMode, setEraseMode] = useState(false);
     const [strokeWidth, setStrokeWidth] = useState(4);
     const [eraserSize, setEraserSize] = useState(12);
+
+    const colors = [
+        "#FF3B3B",
+        "#FF7F50",
+        "#FFA500",
+        "#FFFF00",
+        "#CCFF00",
+        "#00FF00",
+        "#00FFD1",
+        "#00BFFF",
+        "#1E90FF",
+        "#3F00FF",
+        "#8A2BE2",
+        "#FF00FF",
+        "#FF69B4",
+        "#FF1493",
+        "#FFC0CB",
+        "#A52A2A",
+        "#000000",
+    ];
+
+    const getRandomColor = () =>
+        colors[Math.floor(Math.random() * colors.length)];
     const [strokeColor, setStrokeColor] = useState("#000000");
+
+    useEffect(() => {
+        setStrokeColor(getRandomColor());
+    }, []);
 
     const canvasRef = useRef<CanvasHandle>(null);
     const inputFileRef = useRef<HTMLInputElement>(null);
