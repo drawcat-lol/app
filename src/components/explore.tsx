@@ -44,7 +44,7 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                 .from("list_v2")
                 .select("*, profiles:uid(*)", { count: "exact" })
                 .ilike("name", `%${finalSearchTerm}%`)
-                .order("created_at", { ascending: false })
+                .order("updated_at", { ascending: false })
                 .range(
                     (pageNumber - 1) * perPageLimit,
                     pageNumber * perPageLimit - 1

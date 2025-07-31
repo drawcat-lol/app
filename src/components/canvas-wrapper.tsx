@@ -185,6 +185,7 @@ export default function CanvasWrapper() {
                     {
                         uid: user.id,
                         name: inputs["drawing_name"] || "untitled cat",
+                        updated_at: new Date().toISOString(),
                     },
                     { onConflict: "uid" }
                 );
