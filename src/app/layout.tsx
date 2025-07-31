@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Inter, Inter_Tight } from "next/font/google";
 import "./globals.css";
 import UserProvider from "@/components/user-provider";
-import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "next-themes";
+import TheToaster from "@/components/the-toaster";
 
 const inter = Inter({
     variable: "--font-inter",
@@ -44,7 +44,7 @@ export default function RootLayout({
                         disableTransitionOnChange
                     >
                         <main>{children}</main>
-                        <Toaster position="top-center" theme="system" />
+                        <TheToaster />
                     </ThemeProvider>
                 </UserProvider>
             </body>

@@ -39,7 +39,6 @@ export default function CanvasWrapper() {
         "#FF7F50",
         "#FFA500",
         "#FFFF00",
-        "#CCFF00",
         "#00FF00",
         "#00FFD1",
         "#00BFFF",

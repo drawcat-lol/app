@@ -1,19 +1,9 @@
 import Image from "next/image";
 import { Button } from "./ui/button";
-import {
-    Heart,
-    Info,
-    Link2,
-    LinkIcon,
-    Search,
-    Share2,
-    SquareArrowOutUpRight,
-    X,
-} from "lucide-react";
+import { Search, SquareArrowOutUpRight } from "lucide-react";
 import {
     Pagination,
     PaginationContent,
-    PaginationEllipsis,
     PaginationItem,
     PaginationLink,
     PaginationNext,
@@ -33,10 +23,7 @@ import {
     DialogHeader,
 } from "./ui/dialog";
 import { formatDate } from "@/lib/utils";
-import ReportButton from "./report-button";
 import useReloadExploreStore from "@/stores/reload";
-import Link from "next/link";
-import { Badge } from "./ui/badge";
 import useUserStore from "@/stores/user";
 
 export default function Explore({ pageNumber }: { pageNumber: number }) {
@@ -173,146 +160,93 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                     </div>
                 ) : (
                     <div className="grid grid-cols-2 lg:grid-cols-3 gap-px bg-border">
-                        {listItems.map((item, index) => (
-                            <div
-                                className="w-full flex flex-col text-start overflow-hidden group bg-background relative"
-                                key={index}
-                            >
-                                <div className="overflow-hidden relative">
-                                    <Image
-                                        className="w-full aspect-square duration-175 group-hover:scale-110"
-                                        src={getDrawingUrl(item.uid)}
-                                        width={256}
-                                        height={256}
-                                        alt="cat drawing"
-                                        draggable={false}
-                                        loading={"lazy"}
-                                    />
+                        {listItems.map((item, index) => {
+                            const imageSrc = getDrawingUrl(item.uid);
 
-                                    <div className="absolute p-2 top-0 right-0 block lg:hidden">
-                                        <Button
-                                            size={"icon"}
-                                            variant={"outline"}
-                                        >
-                                            <Info />
-                                        </Button>
-                                    </div>
-                                </div>
-                                <div className="absolute p-2 bottom-0 right-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-175 bg-gradient-to-b from-black/0 to-black/100 w-full h-3/4">
-                                    <div className="size-full flex justify-between items-end gap-2">
-                                        <div className="flex flex-col gap-px text-white">
-                                            <span className="font-medium text-sm">
-                                                {item.name}
-                                            </span>
-                                            <span className="text-xs opacity-75">
-                                                {removeHashZero(
-                                                    item.profiles
-                                                        .raw_user_meta_data.name
-                                                )}
-                                            </span>
-                                        </div>
-                                        {/* <Badge
-                                            asChild
-                                            onClick={() =>
-                                                handleLike(item.id, item.uid)
-                                            }
-                                        >
-                                            <button className="cursor-pointer">
-                                                <Heart className="hover:fill-black" />
-                                                0
-                                            </button>
-                                        </Badge> */}
-
-                                        <Dialog>
-                                            <DialogTrigger asChild>
-                                                <Badge
-                                                    asChild
-                                                    className="cursor-pointer"
-                                                    onClick={() =>
-                                                        copyShareLink(
-                                                            `${window.location.origin}/${item.uid}`
-                                                        )
-                                                    }
-                                                >
-                                                    <button>
-                                                        <SquareArrowOutUpRight className="hover:fill-black" />
-                                                        share
-                                                    </button>
-                                                </Badge>
-                                            </DialogTrigger>
-                                            <DialogContent>
-                                                <DialogHeader>
-                                                    <DialogTitle>
-                                                        share drawing
-                                                    </DialogTitle>
-                                                    <DialogDescription>
-                                                        here's a link to this
-                                                        drawing!
-                                                    </DialogDescription>
-                                                </DialogHeader>
-                                                <Input
-                                                    readOnly
-                                                    defaultValue={`${window.location.origin}/${item.uid}`}
+                            return (
+                                <Dialog key={index}>
+                                    <DialogTrigger>
+                                        <div className="w-full flex flex-col text-start overflow-hidden group bg-background cursor-pointer">
+                                            <div className="overflow-hidden">
+                                                <Image
+                                                    className="w-full aspect-square duration-175 group-hover:scale-110"
+                                                    src={imageSrc}
+                                                    width={256}
+                                                    height={256}
+                                                    alt="cat drawing"
+                                                    draggable={false}
+                                                    loading={"lazy"}
                                                 />
-                                            </DialogContent>
-                                        </Dialog>
-                                    </div>
-                                </div>
-                                {/* <div className="p-4 flex flex-col gap-2 absolute bg-background bottom-0 translate-y-full group-hover:translate-y-0 duration-175 w-full border-t">
-                                    <span className="text-sm font-semibold">
-                                        {item.name}
-                                    </span>
-                                    <div className="flex justify-between">
-                                        <div className="flex flex-col gap-1 justify-end">
-                                            <span className="text-xs font-semibold opacity-50">
-                                                {removeHashZero(
-                                                    item.profiles
-                                                        .raw_user_meta_data.name
-                                                )}
-                                            </span>
-                                            <span className="text-xs font-semibold opacity-50">
-                                                {formatDate(item.created_at)}
-                                            </span>
-                                        </div>
-                                        <div className="flex flex-col gap-2">
-                                            <div className="flex gap-2">
-                                                <ReportButton item={item} />
-                                                <Dialog>
-                                                    <DialogTrigger asChild>
-                                                        <Button
-                                                            variant={"outline"}
-                                                            size={"icon"}
-                                                            onClick={() =>
-                                                                copyShareLink(
-                                                                    `${window.location.origin}/${item.uid}`
-                                                                )
-                                                            }
-                                                        >
-                                                            <Share2 />
-                                                        </Button>
-                                                    </DialogTrigger>
-                                                    <DialogContent>
-                                                        <DialogHeader>
-                                                            <DialogTitle>
-                                                                share drawing
-                                                            </DialogTitle>
-                                                            <DialogDescription>
-                                                                here's a link to
-                                                                this drawing!
-                                                            </DialogDescription>
-                                                        </DialogHeader>
-                                                        <Input
-                                                            readOnly
-                                                            defaultValue={`${window.location.origin}/${item.uid}`}
-                                                        />
-                                                    </DialogContent>
-                                                </Dialog>
                                             </div>
                                         </div>
-                                    </div>
-                                </div> */}
-                            </div>
-                        ))}
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle>
+                                                {item.name}
+                                            </DialogTitle>
+                                            <DialogDescription>
+                                                <span className="font-medium underline underline-offset-2">
+                                                    {removeHashZero(
+                                                        item.profiles
+                                                            .raw_user_meta_data
+                                                            .name
+                                                    )}
+                                                </span>
+                                                <span className="mx-2">•</span>
+                                                <span>
+                                                    {formatDate(
+                                                        item.created_at
+                                                    )}
+                                                </span>
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <div className="w-full">
+                                            <Image
+                                                src={imageSrc}
+                                                width={256}
+                                                height={256}
+                                                alt="cat drawingg"
+                                                loading={"lazy"}
+                                                draggable={false}
+                                                className="mx-auto rounded-2xl border border-border shadow-xl"
+                                            />
+                                        </div>
+                                        <DialogFooter>
+                                            <Dialog>
+                                                <DialogTrigger asChild>
+                                                    <Button
+                                                        onClick={() =>
+                                                            copyShareLink(
+                                                                `${window.location.origin}/${item.uid}`
+                                                            )
+                                                        }
+                                                    >
+                                                        <SquareArrowOutUpRight />
+                                                        share
+                                                    </Button>
+                                                </DialogTrigger>
+                                                <DialogContent>
+                                                    <DialogHeader>
+                                                        <DialogTitle>
+                                                            share drawing
+                                                        </DialogTitle>
+                                                        <DialogDescription>
+                                                            here's a link to
+                                                            this drawing!
+                                                        </DialogDescription>
+                                                    </DialogHeader>
+                                                    <Input
+                                                        readOnly
+                                                        defaultValue={`${window.location.origin}/${item.uid}`}
+                                                    />
+                                                </DialogContent>
+                                            </Dialog>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
+                            );
+                        })}
                     </div>
                 )}
             </div>
