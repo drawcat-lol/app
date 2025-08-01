@@ -168,7 +168,7 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                                     <DialogTrigger>
                                         <div className="w-full flex flex-col text-start overflow-hidden group bg-background cursor-pointer">
                                             <div className="overflow-hidden">
-                                                <Image
+                                                <img
                                                     className="w-full aspect-square duration-175 group-hover:scale-110"
                                                     src={imageSrc}
                                                     width={256}
@@ -202,7 +202,7 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                                             </DialogDescription>
                                         </DialogHeader>
                                         <div className="w-full">
-                                            <Image
+                                            <img
                                                 src={imageSrc}
                                                 width={256}
                                                 height={256}

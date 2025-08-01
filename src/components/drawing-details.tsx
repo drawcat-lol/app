@@ -55,7 +55,7 @@ export default function DrawingDetails({ id }: { id: string }) {
             <div className="max-w-lg mx-auto py-20 px-4 md:px-6">
                 <div className="rounded-2xl border overflow-hidden shadow-xl flex flex-col">
                     {url && (
-                        <Image
+                        <img
                             src={url}
                             width={256}
                             height={256}
