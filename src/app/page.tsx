@@ -378,7 +378,7 @@ export default () => {
                         </TooltipTrigger>
                         <DialogContent>
                             <DialogHeader>
-                                <DialogTitle>drawcat.lol</DialogTitle>
+                                <DialogTitle className="font-display">just draw a cat lol</DialogTitle>
                                 <DialogDescription>
                                     drawcat.lol is a place to submit cat
                                     drawings. good or bad, it doesn't matter -

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Inter_Tight } from "next/font/google";
+import { Amatic_SC, Architects_Daughter, Caveat, Coming_Soon, Gloria_Hallelujah, Indie_Flower, Inter, Inter_Tight } from "next/font/google";
 import "./globals.css";
 import UserProvider from "@/components/user-provider";
 import { ThemeProvider } from "next-themes";
@@ -8,11 +8,13 @@ import TheToaster from "@/components/the-toaster";
 const inter = Inter({
     variable: "--font-inter",
     subsets: ["latin"],
+    weight: "400",
 });
 
-const interTight = Inter_Tight({
+const interTight = Architects_Daughter({
     variable: "--font-inter-tight",
     subsets: ["latin"],
+    weight: "400",
 });
 
 export const metadata: Metadata = {

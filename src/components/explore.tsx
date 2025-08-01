@@ -182,7 +182,7 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                                     </DialogTrigger>
                                     <DialogContent>
                                         <DialogHeader>
-                                            <DialogTitle>
+                                            <DialogTitle className="font-display">
                                                 {item.name}
                                             </DialogTitle>
                                             <DialogDescription>
