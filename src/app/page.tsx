@@ -7,13 +7,14 @@ import useUserStore from "@/stores/user";
 import {
     Bug,
     Check,
-    CircleQuestionMark,
     Download,
     ExternalLink,
+    HandHeart,
     LogOut,
     Moon,
     Sun,
     Trash,
+    User,
 } from "lucide-react";
 import {
     SiDiscord,
@@ -34,12 +35,10 @@ import Footer from "@/components/footer";
 import ConfettiExplosion from "react-confetti-explosion";
 import useSubmitFormStore from "@/stores/inputs";
 import useConfettiStore from "@/stores/should-confetti";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -73,12 +72,17 @@ export default () => {
     const { user } = useUserStore();
     const { theme, setTheme } = useTheme();
 
-    const { setInput } = useSubmitFormStore();
+    const { inputs, setInput } = useSubmitFormStore();
     const [signupbro, setSignupbro] = useState(false);
     const { shouldConfetti, setShouldConfetti } = useConfettiStore();
 
     const { setShouldSubmit } = useShouldSubmitStore();
     function handleSubmit() {
+        if (!inputs["drawing_name"]?.trim()) {
+            toast.error("name is required", { richColors: true });
+            return;
+        }
+
         setShouldSubmit(true);
     }
 
@@ -145,26 +149,13 @@ export default () => {
             {user && identity && (
                 <div className="fixed p-4 top-0 left-0">
                     <DropdownMenu>
-                        <DropdownMenuTrigger>
-                            <Avatar>
-                                <AvatarImage
-                                    src={identity.identity_data?.avatar_url}
-                                />
-                                <AvatarFallback>
-                                    {identity.identity_data?.full_name
-                                        ?.split(" ")
-                                        .map((word: string) => word[0])
-                                        .slice(0, 2)
-                                        .join("")
-                                        .toUpperCase() || "??"}
-                                </AvatarFallback>
-                            </Avatar>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant={"link"}>
+                                <User />
+                                {identity.identity_data?.full_name}
+                            </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="ml-4">
-                            <DropdownMenuLabel>
-                                {identity.identity_data?.full_name}
-                            </DropdownMenuLabel>
-                            <DropdownMenuSeparator />
                             <AlertDialog>
                                 <AlertDialogTrigger>
                                     <DropdownMenuItem
@@ -225,6 +216,7 @@ export default () => {
                                 {theme === "dark" ? <Sun /> : <Moon />}
                                 toggle theme
                             </DropdownMenuItem>
+                            <DropdownMenuSeparator />
                             <DropdownMenuItem
                                 onClick={() =>
                                     (window.location.href = "/auth/logout")
@@ -380,36 +372,17 @@ export default () => {
                         <TooltipTrigger asChild>
                             <DialogTrigger asChild>
                                 <Button size="icon" variant="outline">
-                                    <CircleQuestionMark />
+                                    <HandHeart />
                                 </Button>
                             </DialogTrigger>
                         </TooltipTrigger>
                         <DialogContent>
                             <DialogHeader>
-                                <DialogTitle>lore</DialogTitle>
+                                <DialogTitle>drawcat.lol</DialogTitle>
                                 <DialogDescription>
                                     drawcat.lol is a place to submit cat
                                     drawings. good or bad, it doesn't matter -
-                                    that's the whole charm.
-                                    <br />
-                                    <br />
-                                    it was inspired by draw-dino, a similar
-                                    project where students at hack club submit
-                                    dino drawings. but as a hack clubber and a
-                                    cat lover, i wanted to make my own spin on
-                                    it.
-                                    <br />
-                                    <br />
-                                    if you found any bugs or have suggestions,
-                                    please open an issue in our github
-                                    repository{" "}
-                                    <a
-                                        href="https://github.com/drawcat-lol/app"
-                                        className="underline underline-offset-2"
-                                    >
-                                        here
-                                    </a>
-                                    .
+                                    that's the whole point.
                                 </DialogDescription>
                             </DialogHeader>
                             <DialogFooter>
@@ -419,7 +392,7 @@ export default () => {
                                     rel="noopener noreferrer"
                                 >
                                     <Button
-                                        variant="outline"
+                                        variant="link"
                                         className="cursor-pointer"
                                     >
                                         <ExternalLink />
@@ -427,7 +400,7 @@ export default () => {
                                     </Button>
                                 </a>
                                 <a
-                                    href="https://ronykax.xyz"
+                                    href="https://ko-fi.com/ronykax"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
@@ -436,13 +409,13 @@ export default () => {
                                         className="cursor-pointer"
                                     >
                                         <ExternalLink />
-                                        ronykax.xyz
+                                        tip
                                     </Button>
                                 </a>
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>
-                    <TooltipContent>lore</TooltipContent>
+                    <TooltipContent>about</TooltipContent>
                 </Tooltip>
             </div>
         </>
