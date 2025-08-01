@@ -5,14 +5,14 @@ import UserProvider from "@/components/user-provider";
 import { ThemeProvider } from "next-themes";
 import TheToaster from "@/components/the-toaster";
 
-const inter = Inter({
-    variable: "--font-inter",
+const inter = Architects_Daughter({
+    variable: "--font-idk-body",
     subsets: ["latin"],
     weight: "400",
 });
 
 const interTight = Architects_Daughter({
-    variable: "--font-inter-tight",
+    variable: "--font-idk-display",
     subsets: ["latin"],
     weight: "400",
 });
