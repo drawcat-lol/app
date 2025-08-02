@@ -67,6 +67,7 @@ import {
 import { toast } from "sonner";
 import { useTheme } from "next-themes";
 import useReloadExploreStore from "@/stores/reload";
+import useStartedDrawingStore from "@/stores/started-drawing";
 
 export default () => {
     const { user } = useUserStore();
@@ -99,8 +100,12 @@ export default () => {
         return () => clearTimeout(timeout); // cleanup on user change
     }, [user]);
 
+    const { startedDrawing } = useStartedDrawingStore();
     function redirectToSignin(href: string) {
-        setShouldDownload(true);
+        if (startedDrawing) {
+            setShouldDownload(true);
+        }
+
         window.location.href = href;
     }
 
@@ -378,7 +383,9 @@ export default () => {
                         </TooltipTrigger>
                         <DialogContent>
                             <DialogHeader>
-                                <DialogTitle className="font-display">just draw a cat lol</DialogTitle>
+                                <DialogTitle className="font-display">
+                                    just draw a cat lol
+                                </DialogTitle>
                                 <DialogDescription>
                                     drawcat.lol is a place to submit cat
                                     drawings. good or bad, it doesn't matter -

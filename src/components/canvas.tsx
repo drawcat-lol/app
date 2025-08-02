@@ -1,5 +1,6 @@
 "use client";
 
+import useStartedDrawingStore from "@/stores/started-drawing";
 import React, {
     forwardRef,
     useEffect,
@@ -27,6 +28,8 @@ const Canvas = forwardRef<CanvasHandle, Props>(
         const undoStack = useRef<ImageData[]>([]);
         const redoStack = useRef<ImageData[]>([]);
         const drawingRef = useRef(false);
+
+        const { startedDrawing, setStartedDrawing } = useStartedDrawingStore();
 
         useImperativeHandle(ref, () => ({
             undo() {
@@ -121,6 +124,9 @@ const Canvas = forwardRef<CanvasHandle, Props>(
 
             function handleDown(e: MouseEvent | TouchEvent) {
                 e.preventDefault();
+
+                if (!startedDrawing) setStartedDrawing(true);
+
                 undoStack.current.push(
                     ctx.getImageData(0, 0, canvas.width, canvas.height)
                 );
