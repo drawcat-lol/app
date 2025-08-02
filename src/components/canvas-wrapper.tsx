@@ -205,7 +205,7 @@ export default function CanvasWrapper() {
     }, [shouldSubmit]);
 
     return (
-        <div className="flex flex-col border shadow-xl w-fit rounded-2xl overflow-hidden">
+        <div className="flex flex-col border shadow-xl rounded-2xl overflow-hidden size-fit">
             <div className="p-2 border-b flex gap-2 justify-between w-full">
                 <div className="flex gap-2">
                     <ToggleGroup

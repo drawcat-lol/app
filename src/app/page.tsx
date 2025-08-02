@@ -321,10 +321,10 @@ export default () => {
                                     <DialogTitle>
                                         name your masterpiece
                                     </DialogTitle>
-                                    <DialogDescription>
+                                    {/* <DialogDescription>
                                         give your drwaing a name so it can be
                                         easily searched up!
-                                    </DialogDescription>
+                                    </DialogDescription> */}
                                 </DialogHeader>
                                 <Input
                                     placeholder="black cat"
