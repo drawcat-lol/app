@@ -79,7 +79,7 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
 
     function copyShareLink(url: string) {
         navigator.clipboard.writeText(url).then(() => {
-            toast.success("copied to clipboard!", { richColors: true });
+            toast.success("copied to clipboard!");
         });
     }
 
@@ -99,7 +99,7 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
     }
 
     return (
-        <div className="flex flex-col shadow-xl border overflow-hidden rounded-2xl w-full h-fit">
+        <div className="flex flex-col shadow-xl border overflow-hidden w-full h-fit">
             <div className="p-2 border-b flex gap-2 justify-between w-full flex-col items-end sm:flex-row">
                 <div className="relative w-full sm:w-fit">
                     <form onSubmit={handleSubmit}>
@@ -209,7 +209,7 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                                                 alt="cat drawingg"
                                                 loading={"lazy"}
                                                 draggable={false}
-                                                className="mx-auto rounded-2xl border border-border shadow-xl"
+                                                className="mx-auto border border-border shadow-xl"
                                             />
                                         </div>
                                         <DialogFooter>

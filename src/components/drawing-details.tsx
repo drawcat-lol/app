@@ -53,7 +53,7 @@ export default function DrawingDetails({ id }: { id: string }) {
                 </Button>
             </div>
             <div className="max-w-lg mx-auto py-20 px-4 md:px-6">
-                <div className="rounded-2xl border overflow-hidden shadow-xl flex flex-col">
+                <div className="border overflow-hidden shadow-xl flex flex-col">
                     {url && (
                         <img
                             src={url}
@@ -66,7 +66,7 @@ export default function DrawingDetails({ id }: { id: string }) {
                     )}
                 </div>
 
-                <div className="mt-8 flex justify-between">
+                <div className="mt-8 flex justify-between gap-12">
                     <span className="text-3xl font-display font-bold">
                         {data.name}
                     </span>

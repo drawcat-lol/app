@@ -44,7 +44,7 @@
     --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-    --radius: 0.5rem;
+    --radius: 0rem;
     --tracking-tighter: calc(var(--tracking-normal) - 0.05em);
     --tracking-tight: calc(var(--tracking-normal) - 0.025em);
     --tracking-wide: calc(var(--tracking-normal) + 0.025em);
@@ -78,7 +78,7 @@
 }
 
 :root {
-    --radius: 0.5rem;
+    --radius: 0rem;
     --background: oklch(0.9821 0 0);
     --foreground: oklch(0.2435 0 0);
     --card: oklch(0.9911 0 0);
@@ -166,7 +166,7 @@
     --sidebar-border: oklch(0.2739 0.0055 286.0326);
     --sidebar-ring: oklch(0.8711 0.0055 286.2860);
     --destructive-foreground: oklch(1.0000 0 0);
-    --radius: 0.5rem;
+    --radius: 0rem;
     --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
     --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;

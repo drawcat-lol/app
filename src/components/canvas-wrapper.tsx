@@ -205,7 +205,7 @@ export default function CanvasWrapper() {
     }, [shouldSubmit]);
 
     return (
-        <div className="flex flex-col border shadow-xl rounded-2xl overflow-hidden size-fit">
+        <div className="flex flex-col border shadow-xl overflow-hidden size-fit">
             <div className="p-2 border-b flex gap-2 justify-between w-full">
                 <div className="flex gap-2">
                     <ToggleGroup
@@ -303,7 +303,7 @@ export default function CanvasWrapper() {
                 {showIdea && (
                     <div className="absolute bottom-0 right-0 p-2 animate-idea">
                         <button
-                            className="text-sm opacity-75 font-medium border-border rounded-full px-3 py-1 border bg-background flex gap-1 items-center hover:bg-accent duration-100"
+                            className="text-sm opacity-75 font-medium border-border px-2 py-1 border bg-background flex gap-1 items-center hover:bg-accent duration-100"
                             onClick={() =>
                                 setIdea(
                                     ideas[

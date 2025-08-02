@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Amatic_SC, Architects_Daughter, Caveat, Coming_Soon, Gloria_Hallelujah, Indie_Flower, Inter, Inter_Tight } from "next/font/google";
+import { Architects_Daughter } from "next/font/google";
 import "./globals.css";
 import UserProvider from "@/components/user-provider";
 import { ThemeProvider } from "next-themes";
-import TheToaster from "@/components/the-toaster";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Architects_Daughter({
     variable: "--font-idk-body",
@@ -38,17 +38,20 @@ export default function RootLayout({
             <body
                 className={`${inter.className} ${interTight.variable} antialiased`}
             >
-                <UserProvider>
-                    <ThemeProvider
-                        defaultTheme="light"
-                        attribute={"class"}
-                        enableSystem
-                        disableTransitionOnChange
-                    >
+                <ThemeProvider
+                    defaultTheme="light"
+                    attribute={"class"}
+                    enableSystem
+                    disableTransitionOnChange
+                >
+                    <UserProvider>
                         <main>{children}</main>
-                        <TheToaster />
-                    </ThemeProvider>
-                </UserProvider>
+                        <Toaster
+                            className="rounded-full"
+                            position="top-center"
+                        />
+                    </UserProvider>
+                </ThemeProvider>
             </body>
         </html>
     );
