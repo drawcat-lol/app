@@ -155,7 +155,7 @@ export default () => {
                 <div className="fixed p-4 top-0 left-0">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant={"link"}>
+                            <Button variant={"link"} className="font-bold">
                                 <User />
                                 {identity.identity_data?.full_name}
                             </Button>

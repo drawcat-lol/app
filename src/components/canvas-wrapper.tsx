@@ -247,10 +247,14 @@ export default function CanvasWrapper() {
                             <Circle fill={strokeColor} />
                         </Button>
                     </PopoverTrigger>
-                    <PopoverContent asChild>
+                    <PopoverContent
+                        asChild
+                        className="popover-content-for-color-picker"
+                    >
                         <HexColorPicker
                             color={strokeColor}
                             onChange={(e) => setStrokeColor(e)}
+                            // className="react-colorful"
                         />
                     </PopoverContent>
                 </Popover>
