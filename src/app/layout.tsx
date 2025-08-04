@@ -49,6 +49,7 @@ export default function RootLayout({
                         <Toaster
                             className="rounded-full"
                             position="top-center"
+                            toastOptions={{ style: { borderRadius: 0 } }}
                         />
                     </UserProvider>
                 </ThemeProvider>
