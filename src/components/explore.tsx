@@ -1,6 +1,11 @@
-import Image from "next/image";
 import { Button } from "./ui/button";
-import { Search, SquareArrowOutUpRight } from "lucide-react";
+import {
+    Heart,
+    Search,
+    SquareArrowOutUpRight,
+    Flashlight,
+    Plus,
+} from "lucide-react";
 import {
     Pagination,
     PaginationContent,
@@ -25,6 +30,8 @@ import {
 import { formatDate } from "@/lib/utils";
 import useReloadExploreStore from "@/stores/reload";
 import useUserStore from "@/stores/user";
+import { Separator } from "./ui/separator";
+import { useTheme } from "next-themes";
 
 export default function Explore({ pageNumber }: { pageNumber: number }) {
     const [listItems, setListItems] = useState<any[]>([]);
@@ -32,7 +39,7 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
     const [searchTerm, setSearchTerm] = useState("");
     const [finalSearchTerm, setFinalSearchTerm] = useState("");
 
-    const [perPageLimit, setPerPageLimit] = useState(12);
+    const [perPageLimit, setPerPageLimit] = useState(50);
     const [totalItemsCount, setTotalItemsCount] = useState<number | null>(null);
 
     const [likeCounts, setLikeCounts] = useState<Record<number, number>>({});
@@ -98,10 +105,34 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
         }
     }
 
+    const { theme, setTheme } = useTheme();
+
     return (
-        <div className="flex flex-col shadow-xl border overflow-hidden w-full h-fit">
-            <div className="p-2 border-b flex gap-2 justify-between w-full flex-col items-end sm:flex-row">
-                <div className="relative w-full sm:w-fit">
+        <div className="flex flex-col w-full h-fit">
+            <div className="p-2 border-b flex gap-2 w-full">
+                <a href="/">
+                    <span
+                        className={`font-display font-black my-auto px-3 text-2xl ${
+                            theme && theme === "dark" && "color-animate"
+                        }`}
+                    >
+                        drawcat
+                    </span>
+                </a>
+
+                <div className="w-full"></div>
+
+                <Button
+                    size={"icon"}
+                    variant={"outline"}
+                    onClick={() =>
+                        setTheme(theme === "light" ? "dark" : "light")
+                    }
+                >
+                    <Flashlight fill={theme === "dark" ? "white" : "none"} />
+                </Button>
+
+                <div className="relative w-fit">
                     <form onSubmit={handleSubmit}>
                         <Input
                             placeholder="search drawings"
@@ -114,7 +145,13 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                         />
                     </form>
                 </div>
-                <div className="w-fit">
+
+                <Button onClick={() => window.location.href = "/draw"}>
+                    <Plus />
+                    submit drawing
+                </Button>
+
+                {/* <div className="w-fit">
                     <Pagination>
                         <PaginationContent>
                             <PaginationItem>
@@ -137,11 +174,6 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                                 </PaginationItem>
                             ))}
 
-                            {/* {totalItemsCount &&
-                            totalItemsCount > perPageLimit * 36 ? (
-                                <PaginationEllipsis />
-                            ) : null} */}
-
                             <PaginationItem>
                                 <PaginationNext
                                     href={`/?page=${pageNumber + 1}`}
@@ -149,9 +181,9 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                             </PaginationItem>
                         </PaginationContent>
                     </Pagination>
-                </div>
+                </div> */}
             </div>
-            <div className="w-full">
+            <div className="w-full bg-border">
                 {listItems.length === 0 ? (
                     <div className="p-4">
                         <span className="text-sm font-medium opacity-75">
@@ -159,7 +191,9 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                         </span>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-px bg-border">
+                    <div
+                        className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 gap-px`}
+                    >
                         {listItems.map((item, index) => {
                             const imageSrc = getDrawingUrl(item.uid);
 
@@ -167,9 +201,12 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                                 <Dialog key={index}>
                                     <DialogTrigger>
                                         <div className="w-full flex flex-col text-start overflow-hidden group bg-background cursor-pointer">
-                                            <div className="overflow-hidden">
+                                            <div className="overflow-hidden relative">
                                                 <img
-                                                    className="w-full aspect-square duration-175 group-hover:scale-110"
+                                                    className={`w-full aspect-square duration-175 ${
+                                                        theme === "light" &&
+                                                        "group-hover:scale-110"
+                                                    }`}
                                                     src={imageSrc}
                                                     width={256}
                                                     height={256}
@@ -177,6 +214,13 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                                                     draggable={false}
                                                     loading={"lazy"}
                                                 />
+
+                                                <div
+                                                    className={`absolute inset-0 opacity-0 ${
+                                                        theme === "dark" &&
+                                                        "opacity-100"
+                                                    } bg-black/75 hover:bg-black/0 duration-175`}
+                                                ></div>
                                             </div>
                                         </div>
                                     </DialogTrigger>
@@ -204,8 +248,8 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                                         <div className="w-full">
                                             <img
                                                 src={imageSrc}
-                                                width={256}
-                                                height={256}
+                                                width={512}
+                                                height={512}
                                                 alt="cat drawingg"
                                                 loading={"lazy"}
                                                 draggable={false}

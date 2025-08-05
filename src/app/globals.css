@@ -242,3 +242,52 @@
 .popover-content-for-color-picker .react-colorful__alpha-pointer {
     border-radius: 0;
 }
+
+@keyframes rainbowText {
+    0% {
+        background-position: 0% 50%;
+    }
+    100% {
+        background-position: 100% 50%;
+    }
+}
+
+@keyframes colorShift {
+    0% {
+        color: #ff5454;
+    }
+    10% {
+        color: #ff8c42;
+    }
+    20% {
+        color: #ffc94c;
+    }
+    30% {
+        color: #aaff64;
+    }
+    40% {
+        color: #64ffd9;
+    }
+    50% {
+        color: #64aaff;
+    }
+    60% {
+        color: #7373ff;
+    }
+    70% {
+        color: #b464ff;
+    }
+    80% {
+        color: #ff64dc;
+    }
+    90% {
+        color: #ff6480;
+    }
+    100% {
+        color: #ff5454;
+    }
+}
+
+.color-animate {
+    animation: colorShift 1.5s linear infinite;
+}
