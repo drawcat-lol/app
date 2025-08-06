@@ -5,6 +5,9 @@ import {
     SquareArrowOutUpRight,
     Flashlight,
     Plus,
+    MoreHorizontal,
+    Trash2,
+    LogOut,
 } from "lucide-react";
 import {
     Pagination,
@@ -27,6 +30,12 @@ import {
     DialogFooter,
     DialogHeader,
 } from "./ui/dialog";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 import { formatDate } from "@/lib/utils";
 import useReloadExploreStore from "@/stores/reload";
 import useUserStore from "@/stores/user";
@@ -39,7 +48,7 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
     const [searchTerm, setSearchTerm] = useState("");
     const [finalSearchTerm, setFinalSearchTerm] = useState("");
 
-    const [perPageLimit, setPerPageLimit] = useState(50);
+    const [perPageLimit, setPerPageLimit] = useState(100);
     const [totalItemsCount, setTotalItemsCount] = useState<number | null>(null);
 
     const [likeCounts, setLikeCounts] = useState<Record<number, number>>({});
@@ -107,13 +116,46 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
 
     const { theme, setTheme } = useTheme();
 
+    async function handleUserDrawingDelete() {
+        if (!user) return;
+
+        const { error, count } = await suapbase
+            .from("list_v2")
+            .delete({ count: "exact" })
+            .eq("uid", user.id);
+
+        if (error) {
+            toast.error("couldn't delete your drawing!", { richColors: true });
+        } else if (count === 0) {
+            toast.error("you didn't even draw a cat!", { richColors: true });
+        } else {
+            toast.success("your drawing has been deleted :(", {
+                richColors: true,
+            });
+
+            setShouldReloadExplore(true);
+        }
+    }
+    function handleSubmitDrawing() {
+        if (user) {
+            window.location.href = "/draw";
+        } else {
+            window.location.href = "/auth/login/discord";
+        }
+    }
+
+    function handleLogout() {
+        suapbase.auth.signOut();
+        window.location.href = "/";
+    }
+
     return (
         <div className="flex flex-col w-full h-fit">
             <div className="p-2 border-b flex gap-2 w-full">
                 <a href="/">
                     <span
                         className={`font-display font-black my-auto px-3 text-2xl ${
-                            theme && theme === "dark" && "color-animate"
+                            theme !== undefined && theme === "dark" ? "color-animate" : ""
                         }`}
                     >
                         drawcat
@@ -122,15 +164,61 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
 
                 <div className="w-full"></div>
 
-                <Button
-                    size={"icon"}
-                    variant={"outline"}
-                    onClick={() =>
-                        setTheme(theme === "light" ? "dark" : "light")
-                    }
-                >
-                    <Flashlight fill={theme === "dark" ? "white" : "none"} />
-                </Button>
+                <div className="hidden md:block">
+                    <Button
+                        size="icon"
+                        variant="outline"
+                        onClick={() =>
+                            setTheme(theme === "light" ? "dark" : "light")
+                        }
+                    >
+                        <Flashlight
+                            fill={theme === "dark" ? "white" : "none"}
+                        />
+                    </Button>
+                </div>
+
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="icon">
+                            <MoreHorizontal />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="center">
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <DropdownMenuItem
+                                    onSelect={(e) => e.preventDefault()}
+                                >
+                                    <Trash2 />
+                                    delete drawing
+                                </DropdownMenuItem>
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>delete drawing</DialogTitle>
+                                    <DialogDescription>
+                                        are you sure you want to delete your
+                                        drawing? this action cannot be undone.
+                                    </DialogDescription>
+                                </DialogHeader>
+                                <DialogFooter>
+                                    <Button variant="outline">cancel</Button>
+                                    <Button
+                                        variant="destructive"
+                                        onClick={handleUserDrawingDelete}
+                                    >
+                                        delete
+                                    </Button>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
+                        <DropdownMenuItem onClick={handleLogout}>
+                            <LogOut />
+                            log out
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
 
                 <div className="relative w-fit">
                     <form onSubmit={handleSubmit}>
@@ -146,7 +234,7 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                     </form>
                 </div>
 
-                <Button onClick={() => window.location.href = "/draw"}>
+                <Button onClick={handleSubmitDrawing}>
                     <Plus />
                     submit drawing
                 </Button>
@@ -192,7 +280,7 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                     </div>
                 ) : (
                     <div
-                        className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 gap-px`}
+                        className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-px`}
                     >
                         {listItems.map((item, index) => {
                             const imageSrc = getDrawingUrl(item.uid);

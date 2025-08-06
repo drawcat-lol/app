@@ -263,7 +263,8 @@ export default function CanvasWrapper() {
                     onClick={() => inputFileRef.current?.click()}
                 >
                     <Upload />
-                    upload
+                    <span className="hidden sm:inline">upload drawing</span>
+                    <span className="inline sm:hidden">upload</span>
                     <input
                         className="hidden"
                         type="file"

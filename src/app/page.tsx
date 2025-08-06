@@ -77,6 +77,31 @@ export default () => {
     const [signupbro, setSignupbro] = useState(false);
     const { shouldConfetti, setShouldConfetti } = useConfettiStore();
 
+    const catFacts = [
+        "a cat's nose print is unique, like a fingerprint.",
+        "cats spend 70% of their lives sleeping.",
+        "cats have over 20 muscles that control their ears.",
+        "a cat's purr vibrates at a frequency that promotes bone healing.",
+        "cats can't taste sweetness.",
+        "a cat's whiskers help them determine if they can fit through a space.",
+        "cats have a third eyelid called a nictitating membrane.",
+        "cats can rotate their ears 180 degrees.",
+        "a group of cats is called a clowder.",
+        "cats have over 100 different vocal sounds.",
+        "cats can jump up to 6 times their body length.",
+        "cats have scent glands on their cheeks and paws.",
+        "a cat's tail helps them balance.",
+        "cats can see in near darkness.",
+        "cats spend 30% of their waking hours grooming themselves.",
+    ];
+
+    const [currentFactIndex, setCurrentFactIndex] = useState(0);
+
+    const getRandomFact = () => {
+        const newIndex = Math.floor(Math.random() * catFacts.length);
+        setCurrentFactIndex(newIndex);
+    };
+
     const { setShouldSubmit } = useShouldSubmitStore();
     function handleSubmit() {
         if (!inputs["drawing_name"]?.trim()) {
@@ -138,8 +163,30 @@ export default () => {
     }
 
     return (
-        <Suspense>
-            <ExploreWrapper />
-        </Suspense>
+        <div className="max-w-7xl mx-auto border-x-0 xl:border-x">
+            <Suspense>
+                <ExploreWrapper />
+                <div className="border-y p-4 text-muted-foreground flex flex-col lg:flex-row gap-2 justify-between">
+                    <div>
+                        open source on <a href="https://github.com/drawcat-lol/app" className="hover:text-foreground underline">github</a>
+                        <br />
+                        <span
+                            onClick={getRandomFact}
+                            className="cursor-pointer hover:text-foreground transition-colors"
+                            title="click for a new cat fact"
+                        >
+                            {catFacts[currentFactIndex]}
+                        </span>
+                    </div>
+
+                    <div className="text-end">
+                        © {new Date().getFullYear()} drawcat.lol
+                        <br />
+                        made with ❤️ by{" "}
+                        <a href="https://ronykax.xyz" className="hover:text-foreground underline">ronykax</a>
+                    </div>
+                </div>
+            </Suspense>
+        </div>
     );
 };

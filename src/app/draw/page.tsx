@@ -12,6 +12,20 @@ import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 import ConfettiExplosion from "react-confetti-explosion";
 import useConfettiStore from "@/stores/should-confetti";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+    Tooltip,
+    TooltipTrigger,
+    TooltipContent,
+} from "@/components/ui/tooltip";
 
 export default function DrawPage() {
     const { user } = useUserStore();
@@ -63,46 +77,71 @@ export default function DrawPage() {
                 </div>
 
                 <div className="space-y-8">
-                    <div>
-                        <CanvasWrapper />
-                    </div>
+                    <CanvasWrapper />
 
                     <div className="space-y-4">
-                        <div className="space-y-2">
-                            <Label>drawing name</Label>
-                            <Input
-                                placeholder="my awesome cat"
-                                value={inputs["drawing_name"] || ""}
-                                onChange={(e) =>
-                                    setInput("drawing_name", e.target.value)
-                                }
-                            />
-                        </div>
-
                         <div className="flex gap-2">
                             <Button
                                 onClick={handleDownload}
                                 variant="outline"
                                 className="flex-1"
                             >
-                                <Download className="w-4 h-4 mr-2" />
-                                download
+                                <Download />
+                                download png
                             </Button>
-                            <Button
-                                onClick={handleSubmit}
-                                disabled={!user}
-                                className="flex-1"
-                            >
-                                <Save className="w-4 h-4 mr-2" />
-                                save
-                            </Button>
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button className="flex-1" disabled={!user}>
+                                        <Save />
+                                        submit
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent>
+                                    <DialogHeader>
+                                        <DialogTitle>
+                                            name your masterpiece
+                                        </DialogTitle>
+                                        {/* <DialogDescription>
+                                            give your masterpiece a name so it
+                                            can be easily searched up!
+                                        </DialogDescription> */}
+                                    </DialogHeader>
+                                    <Input
+                                        autoFocus
+                                        placeholder="my awesome cat"
+                                        value={inputs["drawing_name"] || ""}
+                                        onChange={(e) =>
+                                            setInput(
+                                                "drawing_name",
+                                                e.target.value
+                                            )
+                                        }
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter") {
+                                                handleSubmit();
+                                            }
+                                        }}
+                                    />
+                                    <DialogFooter>
+                                        <div className="flex justify-end gap-2 mt-4">
+                                            <Button
+                                                variant="outline"
+                                                onClick={() =>
+                                                    document.activeElement instanceof
+                                                        HTMLElement &&
+                                                    document.activeElement.blur()
+                                                }
+                                            >
+                                                cancel
+                                            </Button>
+                                            <Button onClick={handleSubmit}>
+                                                submit
+                                            </Button>
+                                        </div>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
                         </div>
-
-                        {!user && (
-                            <p className="text-sm text-muted-foreground">
-                                sign in to save your drawing
-                            </p>
-                        )}
                     </div>
                 </div>
             </div>

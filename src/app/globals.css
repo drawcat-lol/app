@@ -256,38 +256,68 @@
     0% {
         color: #ff5454;
     }
+    5% {
+        color: #ff7a54;
+    }
     10% {
         color: #ff8c42;
+    }
+    15% {
+        color: #ffb142;
     }
     20% {
         color: #ffc94c;
     }
+    25% {
+        color: #eaff64;
+    }
     30% {
         color: #aaff64;
+    }
+    35% {
+        color: #64ff8c;
     }
     40% {
         color: #64ffd9;
     }
+    45% {
+        color: #64fff6;
+    }
     50% {
         color: #64aaff;
+    }
+    55% {
+        color: #649cff;
     }
     60% {
         color: #7373ff;
     }
+    65% {
+        color: #8c64ff;
+    }
     70% {
         color: #b464ff;
+    }
+    75% {
+        color: #e064ff;
     }
     80% {
         color: #ff64dc;
     }
+    85% {
+        color: #ff64b1;
+    }
     90% {
         color: #ff6480;
+    }
+    95% {
+        color: #ff546e;
     }
     100% {
         color: #ff5454;
     }
 }
 
-.color-animate {
-    animation: colorShift 1.5s linear infinite;
+.color-animate:hover {
+    animation: colorShift 2s linear infinite;
 }

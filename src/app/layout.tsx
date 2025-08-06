@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Gloria_Hallelujah, Inter } from "next/font/google";
+import { Gloria_Hallelujah, Outfit } from "next/font/google";
 import "./globals.css";
 import UserProvider from "@/components/user-provider";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/sonner";
 
-const body = Inter({
+const body = Outfit({
     variable: "--font-idk-body",
     subsets: ["latin"],
     weight: "400",
@@ -50,6 +50,7 @@ export default function RootLayout({
                         <Toaster
                             className="rounded-full"
                             position="top-center"
+                            toastOptions={{ style: { borderRadius: "0px" } }}
                         />
                     </UserProvider>
                 </ThemeProvider>
