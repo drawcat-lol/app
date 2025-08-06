@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import CanvasWrapper from "@/components/canvas-wrapper";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,6 +33,7 @@ export default function DrawPage() {
     const { inputs, setInput } = useSubmitFormStore();
     const { setShouldSubmit } = useShouldSubmitStore();
     const { setShouldDownload } = useShouldDownloadStore();
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     function handleSubmit() {
         if (!inputs["drawing_name"]?.trim()) {
@@ -40,6 +42,7 @@ export default function DrawPage() {
         }
 
         setShouldSubmit(true);
+        setIsDialogOpen(false);
     }
 
     function handleDownload() {
@@ -89,7 +92,7 @@ export default function DrawPage() {
                                 <Download />
                                 download png
                             </Button>
-                            <Dialog>
+                            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                                 <DialogTrigger asChild>
                                     <Button className="flex-1" disabled={!user}>
                                         <Save />

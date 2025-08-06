@@ -9,5 +9,5 @@ export async function GET(request: Request) {
         await suapbase.auth.exchangeCodeForSession(code);
     }
 
-    return NextResponse.redirect(new URL("/draw", request.url));
+    return NextResponse.redirect(new URL("/", request.url));
 }

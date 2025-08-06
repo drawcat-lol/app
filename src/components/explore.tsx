@@ -34,6 +34,8 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { formatDate } from "@/lib/utils";
@@ -41,6 +43,15 @@ import useReloadExploreStore from "@/stores/reload";
 import useUserStore from "@/stores/user";
 import { Separator } from "./ui/separator";
 import { useTheme } from "next-themes";
+import { UserIdentity } from "@supabase/supabase-js";
+import Link from "next/link";
+import {
+    SiGithub,
+    SiDiscord,
+    SiSlack,
+    SiHackclub,
+    SiHackclubHex,
+} from "@icons-pack/react-simple-icons";
 
 export default function Explore({ pageNumber }: { pageNumber: number }) {
     const [listItems, setListItems] = useState<any[]>([]);
@@ -52,6 +63,7 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
     const [totalItemsCount, setTotalItemsCount] = useState<number | null>(null);
 
     const [likeCounts, setLikeCounts] = useState<Record<number, number>>({});
+    const [isSignInDialogOpen, setIsSignInDialogOpen] = useState(false);
     const { shouldReloadExplore, setShouldReloadExplore } =
         useReloadExploreStore();
     useEffect(() => {
@@ -140,7 +152,7 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
         if (user) {
             window.location.href = "/draw";
         } else {
-            window.location.href = "/auth/login/discord";
+            setIsSignInDialogOpen(true);
         }
     }
 
@@ -149,78 +161,93 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
         window.location.href = "/";
     }
 
+    const [identity, setIdentity] = useState<UserIdentity | null>();
+    useEffect(() => {
+        if (!user) return;
+        setIdentity(user.identities?.[0]);
+    }, [user]);
+
     return (
         <div className="flex flex-col w-full h-fit">
             <div className="p-2 border-b flex gap-2 w-full">
                 <a href="/">
-                    <span
-                        className={`font-display font-black my-auto px-3 text-2xl ${
-                            theme !== undefined && theme === "dark" ? "color-animate" : ""
-                        }`}
-                    >
+                    <span className="font-display font-black my-auto px-3 text-2xl">
                         drawcat
                     </span>
                 </a>
 
                 <div className="w-full"></div>
 
-                <div className="hidden md:block">
-                    <Button
-                        size="icon"
-                        variant="outline"
-                        onClick={() =>
-                            setTheme(theme === "light" ? "dark" : "light")
-                        }
-                    >
-                        <Flashlight
-                            fill={theme === "dark" ? "white" : "none"}
-                        />
-                    </Button>
-                </div>
-
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="icon">
-                            <MoreHorizontal />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="center">
-                        <Dialog>
-                            <DialogTrigger asChild>
-                                <DropdownMenuItem
-                                    onSelect={(e) => e.preventDefault()}
-                                >
-                                    <Trash2 />
-                                    delete drawing
-                                </DropdownMenuItem>
-                            </DialogTrigger>
-                            <DialogContent>
-                                <DialogHeader>
-                                    <DialogTitle>delete drawing</DialogTitle>
-                                    <DialogDescription>
-                                        are you sure you want to delete your
-                                        drawing? this action cannot be undone.
-                                    </DialogDescription>
-                                </DialogHeader>
-                                <DialogFooter>
-                                    <Button variant="outline">cancel</Button>
-                                    <Button
-                                        variant="destructive"
-                                        onClick={handleUserDrawingDelete}
+                {user && (
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline" size="icon">
+                                <MoreHorizontal />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="center">
+                            {identity && (
+                                <DropdownMenuLabel>
+                                    {removeHashZero(
+                                        identity.identity_data?.name
+                                    )}
+                                </DropdownMenuLabel>
+                            )}
+                            <DropdownMenuSeparator />
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <DropdownMenuItem
+                                        onSelect={(e) => e.preventDefault()}
                                     >
-                                        delete
-                                    </Button>
-                                </DialogFooter>
-                            </DialogContent>
-                        </Dialog>
-                        <DropdownMenuItem onClick={handleLogout}>
-                            <LogOut />
-                            log out
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                                        <Trash2 />
+                                        delete drawing
+                                    </DropdownMenuItem>
+                                </DialogTrigger>
+                                <DialogContent>
+                                    <DialogHeader>
+                                        <DialogTitle>
+                                            delete drawing
+                                        </DialogTitle>
+                                        <DialogDescription>
+                                            are you sure you want to delete your
+                                            drawing? this action cannot be
+                                            undone.
+                                        </DialogDescription>
+                                    </DialogHeader>
+                                    <DialogFooter>
+                                        <Button variant="outline">
+                                            cancel
+                                        </Button>
+                                        <Button
+                                            variant="destructive"
+                                            onClick={handleUserDrawingDelete}
+                                        >
+                                            delete
+                                        </Button>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
+                            <DropdownMenuItem
+                                onClick={() =>
+                                    setTheme(
+                                        theme === "light" ? "dark" : "light"
+                                    )
+                                }
+                            >
+                                <Flashlight
+                                    fill={theme === "dark" ? "white" : "none"}
+                                />
+                                spotlight
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={handleLogout}>
+                                <LogOut />
+                                log out
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                )}
 
-                <div className="relative w-fit">
+                <div className="relative w-xs">
                     <form onSubmit={handleSubmit}>
                         <Input
                             placeholder="search drawings"
@@ -280,6 +307,7 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                     </div>
                 ) : (
                     <div
+                        // className={`flex flex-wrap gap-px`}
                         className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-px`}
                     >
                         {listItems.map((item, index) => {
@@ -382,6 +410,47 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                     </div>
                 )}
             </div>
+
+            <Dialog
+                open={isSignInDialogOpen}
+                onOpenChange={setIsSignInDialogOpen}
+            >
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>sign in to submit</DialogTitle>
+                        <DialogDescription>
+                            we use oauth to make sure people follow the rules
+                            and to block anyone who doesn't.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <a href="/auth/login/github">
+                            <Button asChild>
+                                <span>
+                                    <SiGithub />
+                                    github
+                                </span>
+                            </Button>
+                        </a>
+                        <a href="/auth/login/discord">
+                            <Button asChild>
+                                <span>
+                                    <SiDiscord />
+                                    discord
+                                </span>
+                            </Button>
+                        </a>
+                        <a href="/auth/login/slack_oidc">
+                            <Button asChild>
+                                <span>
+                                    <SiHackclub />
+                                    slack (hackclub)
+                                </span>
+                            </Button>
+                        </a>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }
