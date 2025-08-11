@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Architects_Daughter } from "next/font/google";
+import { Architects_Daughter, Gloria_Hallelujah } from "next/font/google";
 import "./globals.css";
 import UserProvider from "@/components/user-provider";
 import { ThemeProvider } from "next-themes";
@@ -11,7 +11,7 @@ const inter = Architects_Daughter({
     weight: "400",
 });
 
-const interTight = Architects_Daughter({
+const interTight = Gloria_Hallelujah({
     variable: "--font-idk-display",
     subsets: ["latin"],
     weight: "400",

@@ -1,6 +1,5 @@
-import Image from "next/image";
 import { Button } from "./ui/button";
-import { Search, SquareArrowOutUpRight } from "lucide-react";
+import { Download, Search, SquareArrowOutUpRight } from "lucide-react";
 import {
     Pagination,
     PaginationContent,
@@ -25,6 +24,7 @@ import {
 import { formatDate } from "@/lib/utils";
 import useReloadExploreStore from "@/stores/reload";
 import useUserStore from "@/stores/user";
+import ReportButton from "./report-button";
 
 export default function Explore({ pageNumber }: { pageNumber: number }) {
     const [listItems, setListItems] = useState<any[]>([]);
@@ -69,7 +69,7 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
     }
 
     const getDrawingUrl = (uid: string) =>
-        suapbase.storage.from("sketches").getPublicUrl(`${uid}.png`).data
+        suapbase.storage.from("sketches").getPublicUrl(`${uid}.png`, { download: true }).data
             .publicUrl;
 
     const getPages = (pageNumber: number) => {
@@ -96,6 +96,15 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
         if (error) {
             console.error("Error liking:", error);
         }
+    }
+
+    function downloadDrawing(url: string) {
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
     }
 
     return (
@@ -204,8 +213,8 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                                         <div className="w-full">
                                             <img
                                                 src={imageSrc}
-                                                width={256}
-                                                height={256}
+                                                width={512}
+                                                height={512}
                                                 alt="cat drawingg"
                                                 loading={"lazy"}
                                                 draggable={false}
@@ -213,6 +222,16 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                                             />
                                         </div>
                                         <DialogFooter>
+                                            <ReportButton item={item} />
+                                            <Button
+                                                variant={"outline"}
+                                                size={"icon"}
+                                                onClick={() =>
+                                                    downloadDrawing(imageSrc)
+                                                }
+                                            >
+                                                <Download />
+                                            </Button>
                                             <Dialog>
                                                 <DialogTrigger asChild>
                                                     <Button

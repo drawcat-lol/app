@@ -37,7 +37,7 @@ export default function Footer() {
     }, []);
 
     return (
-        <div className="w-full text-sm flex flex-col text-muted-foreground md:flex-row gap-8 md:gap-0 max-w-6xl px-4 md:px-6 mx-auto py-6 justify-between">
+        <div className="w-full text-sm flex flex-col text-muted-foreground md:flex-row gap-8 md:gap-0 max-w-7xl px-4 md:px-6 mx-auto py-6 justify-between">
             <div className="flex flex-col gap-1">
                 <span>
                     open source on{" "}

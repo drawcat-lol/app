@@ -274,17 +274,6 @@ export default () => {
                                     <SiGithub />
                                     github
                                 </Button>
-                                <Button
-                                    size={"lg"}
-                                    onClick={() =>
-                                        redirectToSignin(
-                                            "/auth/login/slack_oidc"
-                                        )
-                                    }
-                                >
-                                    <SiHackclub />
-                                    slack (hackclub)
-                                </Button>
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>{" "}
@@ -292,7 +281,7 @@ export default () => {
                 </div>
             </div>
 
-            <div className="max-w-6xl mx-auto px-4 md:px-6 flex flex-col gap-16 lg:gap-6 md:gap-6 lg:flex-row py-20">
+            <div className="max-w-7xl mx-auto px-4 md:px-6 flex flex-col gap-16 lg:gap-6 md:gap-6 lg:flex-row py-20">
                 <div className="flex flex-col outline-blue-600 w-fit h-fit text-center lg:text-start mx-auto">
                     <span className="text-6xl font-display font-bold">
                         just draw
@@ -326,10 +315,12 @@ export default () => {
                                     <DialogTitle>
                                         name your masterpiece
                                     </DialogTitle>
-                                    {/* <DialogDescription>
-                                        give your drwaing a name so it can be
+                                    <DialogDescription>
+                                        {/* give your drwaing a name so it can be
                                         easily searched up!
-                                    </DialogDescription> */}
+                                        <br /><br /> */}
+                                        if you already submitted a drawing before, it will be overwritten.
+                                    </DialogDescription>
                                 </DialogHeader>
                                 <Input
                                     placeholder="black cat"
