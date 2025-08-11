@@ -440,14 +440,6 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                                 </span>
                             </Button>
                         </a>
-                        <a href="/auth/login/slack_oidc">
-                            <Button asChild>
-                                <span>
-                                    <SiHackclub />
-                                    slack (hackclub)
-                                </span>
-                            </Button>
-                        </a>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
