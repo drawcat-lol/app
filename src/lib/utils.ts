@@ -38,10 +38,10 @@ export function formatDate(iso: string): string {
 }
 
 // removes #0 from usernames (discord)
-export function removeHashZero(name: string) {
-    const result = name.endsWith("#0") ? name.slice(0, -2) : name;
-    return result;
-}
+// export function removeHashZero(name: string) {
+//     const result = name.endsWith("#0") ? name.slice(0, -2) : name;
+//     return result;
+// }
 
 // adds a white background to drawings
 export async function whiteBbg(pngBlob: Blob): Promise<Blob> {

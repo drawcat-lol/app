@@ -9,7 +9,7 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 import { FormEvent, useEffect, useState } from "react";
-import { removeHashZero, suapbase } from "@/lib/utils";
+import { suapbase } from "@/lib/utils";
 import { toast } from "sonner";
 import { Input } from "./ui/input";
 import {
@@ -69,8 +69,9 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
     }
 
     const getDrawingUrl = (uid: string) =>
-        suapbase.storage.from("sketches").getPublicUrl(`${uid}.png`, { download: true }).data
-            .publicUrl;
+        suapbase.storage
+            .from("sketches")
+            .getPublicUrl(`${uid}.png`, { download: true }).data.publicUrl;
 
     const getPages = (pageNumber: number) => {
         if (pageNumber <= 2) return [1, 2, 3];
@@ -196,11 +197,11 @@ export default function Explore({ pageNumber }: { pageNumber: number }) {
                                             </DialogTitle>
                                             <DialogDescription>
                                                 <span className="font-medium underline underline-offset-2">
-                                                    {removeHashZero(
+                                                    {
                                                         item.profiles
                                                             .raw_user_meta_data
                                                             .name
-                                                    )}
+                                                    }
                                                 </span>
                                                 <span className="mx-2">•</span>
                                                 <span>

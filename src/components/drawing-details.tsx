@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { removeHashZero, suapbase } from "@/lib/utils";
+import { suapbase } from "@/lib/utils";
 import ReportButton from "./report-button";
 import { Button } from "./ui/button";
 import { ArrowLeft, Download } from "lucide-react";
@@ -88,9 +88,7 @@ export default function DrawingDetails({ id }: { id: string }) {
                 <div className="mt-2 font-medium opacity-75">
                     by{" "}
                     <span className="underline underline-offset-2">
-                        {removeHashZero(
-                            data.profiles.raw_user_meta_data.name as string
-                        )}
+                        {data.profiles.raw_user_meta_data.name}
                     </span>
                 </div>
             </div>
